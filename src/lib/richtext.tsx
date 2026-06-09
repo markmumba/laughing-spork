@@ -157,7 +157,7 @@ const options = {
       const src = rawUrl.startsWith('//') ? `https:${rawUrl}` : rawUrl
       return (
         <figure>
-          <img src={src} alt={description || title || ''} />
+          <img src={src} alt={description || title || ''} loading="lazy" decoding="async" />
           {title && <figcaption>{title}</figcaption>}
         </figure>
       )

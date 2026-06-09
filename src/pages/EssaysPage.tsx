@@ -46,12 +46,43 @@ function readTime(article: unknown): number {
   return Math.max(1, Math.ceil(words / 200))
 }
 
-function getExcerpt(article: unknown): string {
-  const text = richTextToPlain(article)
+function getExcerpt(article: unknown, chars = 200): string {
+  const text = richTextToPlain(article).trim()
   if (!text) return ''
-  const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0)
-  if (sentences.length >= 2) return sentences[0].trim() + '. ' + sentences[1].trim() + '.'
-  return (sentences[0]?.trim() ?? '') + '.'
+  return text.length > chars ? text.slice(0, chars).trimEnd() + '…' : text
+}
+
+// ─── Hero Card ────────────────────────────────────────────────────────────────
+
+function HeroCard({ essay }: { essay: EssayItem }) {
+  const title = extractText(essay.title)
+  const date = extractText(essay.publishDate as string)
+  const category = extractText(essay.category)
+  const mins = readTime(essay.article)
+  const excerpt = getExcerpt(essay.article, 240)
+  const imgSrc = essay.blogImage
+    ? optimizeContentfulImageUrl(essay.blogImage, { width: 1200 })
+    : ''
+
+  return (
+    <Link
+      to={`/essays/${essay.id}`}
+      className="essay-hero-card"
+      style={imgSrc ? { backgroundImage: `url(${imgSrc})` } : undefined}
+    >
+      <div className="essay-hero-card__overlay" />
+      <div className="essay-hero-card__content">
+        {category && <p className="essay-hero-card__eyebrow">{category}</p>}
+        <h2 className="essay-hero-card__title">{title}</h2>
+        {excerpt && <p className="essay-hero-card__excerpt">{excerpt}</p>}
+        <p className="essay-hero-card__meta">
+          {formatDate(date)}
+          {date && <span className="essay-item__meta-dot">·</span>}
+          {mins} min read
+        </p>
+      </div>
+    </Link>
+  )
 }
 
 // ─── Article Row ─────────────────────────────────────────────────────────────
@@ -84,7 +115,7 @@ function EssayRow({ essay }: { essay: EssayItem }) {
       </div>
       {imgSrc && (
         <div className="essay-item__image">
-          <img src={imgSrc} alt={essay.blogImageAlt || title} />
+          <img src={imgSrc} alt={essay.blogImageAlt || title} loading="lazy" decoding="async" />
         </div>
       )}
     </Link>
@@ -112,6 +143,9 @@ export default function EssaysPage() {
     const q = query.toLowerCase()
     return title.includes(q) || tags.some((t) => t.includes(q))
   })
+
+  const heroEssay = !query && filtered.length > 0 ? filtered[0] : null
+  const listEssays = !query && filtered.length > 0 ? filtered.slice(1) : filtered
 
   return (
     <div className="essays-page">
@@ -149,7 +183,7 @@ export default function EssaysPage() {
         </div>
       </div>
 
-      {/* List */}
+      {/* Content */}
       <main className="essay-list">
         <div className="essay-list-container">
           {loading ? (
@@ -160,7 +194,10 @@ export default function EssaysPage() {
               <p>{query ? 'Try a different search.' : 'Check back soon.'}</p>
             </div>
           ) : (
-            filtered.map((e) => <EssayRow key={e.id} essay={e} />)
+            <>
+              {heroEssay && <HeroCard essay={heroEssay} />}
+              {listEssays.map((e) => <EssayRow key={e.id} essay={e} />)}
+            </>
           )}
         </div>
       </main>

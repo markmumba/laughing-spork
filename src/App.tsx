@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { BrowserRouter, Routes, Route, Link as RouterLink } from 'react-router-dom'
-import EssaysPage from './pages/EssaysPage'
-import ArticlePage from './pages/ArticlePage'
+import { getEssaysForHomepage, type EssayItem } from './lib/contentful'
+import { optimizeContentfulImageUrl } from './lib/contentful-image'
 import './App.css'
+
+const EssaysPage = lazy(() => import('./pages/EssaysPage'))
+const ArticlePage = lazy(() => import('./pages/ArticlePage'))
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -59,32 +62,6 @@ const projects = [
   },
 ]
 
-const articles = [
-  {
-    id: 1,
-    title: 'The Config Server Needs the Service Registry…',
-    subtitle: 'Part 9: Centralized Configuration, Distributed Tracing',
-    date: '5 days ago',
-  },
-  {
-    id: 2,
-    title: 'A User Clicks "Book Now"…',
-    subtitle: 'Part 8: Common Module, Auto-Configuration, gRPC Auth',
-    date: '6 days ago',
-  },
-  {
-    id: 3,
-    title: 'Everything I Knew About Spring Security…',
-    subtitle: 'Part 6: Authentication in Microservices',
-    date: '7 days ago',
-  },
-  {
-    id: 4,
-    title: 'Half of My OAuth2 Login Flow…',
-    subtitle: 'Part 7: Authorization Server, Spring mechanisms',
-    date: '7 days ago',
-  },
-]
 
 const skills: Record<string, string[]> = {
   'Languages & Frameworks': [
@@ -178,6 +155,11 @@ function Nav() {
             </a>
           </li>
           <li>
+            <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" onClick={close}>
+              Resume
+            </a>
+          </li>
+          <li>
             <a
               href="https://github.com/markmumba"
               target="_blank"
@@ -185,9 +167,10 @@ function Nav() {
               className="nav__github"
               aria-label="GitHub"
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="nav__github-icon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
               </svg>
+              <span className="nav__github-text">GitHub</span>
             </a>
           </li>
         </ul>
@@ -208,9 +191,12 @@ function Nav() {
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
+
 function Hero() {
   return (
     <section id="hero" className="hero">
+      <div className="hero__stars-a" aria-hidden="true" />
+      <div className="hero__stars-b" aria-hidden="true" />
       <div className="hero__inner">
         <p className="hero__eyebrow">NAIROBI, KENYA — AVAILABLE WORLDWIDE</p>
         <h1 className="hero__name">
@@ -245,11 +231,12 @@ function Hero() {
 // ─── About ───────────────────────────────────────────────────────────────────
 
 function About() {
-  const ref = useReveal()
+  const headerRef = useReveal()
+  const gridRef = useReveal()
   return (
     <section id="about" className="section section--white">
       <div className="container">
-        <div ref={ref} className="reveal about__grid">
+        <div ref={headerRef} className="reveal about__grid">
           <div className="about__left">
             <p className="section__eyebrow">ABOUT</p>
             <h2 className="section__headline">
@@ -275,16 +262,14 @@ function About() {
               <cite>— Alan Watts</cite>
             </blockquote>
           </div>
-          <div className="about__right">
+          <div ref={gridRef} className="about__right stagger-reveal">
             <div className="about__card">
               <p className="about__card-label">CURRENT FOCUS</p>
               <ul className="about__focus-list">
                 <li>Exploring distributed systems</li>
-                <li>
-                  Reading <em>Designing Data-Intensive Applications</em>
-                </li>
+                <li>Reading on system design principles</li>
                 <li>The psychology of debugging</li>
-                <li>Learning Rust + advanced concurrency</li>
+                <li>How fintech works — RTGS, payment platforms, distributed settlement engines</li>
               </ul>
             </div>
             <div className="about__card">
@@ -314,14 +299,16 @@ function About() {
 // ─── Skills ──────────────────────────────────────────────────────────────────
 
 function Skills() {
-  const ref = useReveal()
+  const headerRef = useReveal()
+  const gridRef = useReveal()
   return (
     <section id="skills" className="section section--gray">
       <div className="container">
-        <div ref={ref} className="reveal">
+        <div ref={headerRef} className="reveal">
           <p className="section__eyebrow">SKILLS</p>
           <h2 className="section__headline">Tools of the trade.</h2>
-          <div className="skills__grid">
+        </div>
+        <div ref={gridRef} className="skills__grid stagger-reveal">
             {Object.entries(skills).map(([category, items]) => (
               <div key={category} className="skills__group">
                 <p className="skills__category">{category}</p>
@@ -334,7 +321,6 @@ function Skills() {
                 </div>
               </div>
             ))}
-          </div>
         </div>
       </div>
     </section>
@@ -379,18 +365,19 @@ function ProjectCard({ project }: { project: (typeof projects)[0] }) {
 }
 
 function Projects() {
-  const ref = useReveal()
+  const headerRef = useReveal()
+  const gridRef = useReveal()
   return (
     <section id="projects" className="section section--white">
       <div className="container">
-        <div ref={ref} className="reveal">
+        <div ref={headerRef} className="reveal">
           <p className="section__eyebrow">PROJECTS</p>
           <h2 className="section__headline">Things I've built.</h2>
-          <div className="projects__grid">
-            {projects.map((p) => (
-              <ProjectCard key={p.id} project={p} />
-            ))}
-          </div>
+        </div>
+        <div ref={gridRef} className="projects__grid stagger-reveal">
+          {projects.map((p) => (
+            <ProjectCard key={p.id} project={p} />
+          ))}
         </div>
       </div>
     </section>
@@ -399,37 +386,126 @@ function Projects() {
 
 // ─── Writing ─────────────────────────────────────────────────────────────────
 
+function extractText(rich: unknown): string {
+  if (typeof rich === 'string') return rich
+  if (rich && typeof rich === 'object' && 'content' in rich) {
+    const r = rich as { content?: Array<{ content?: Array<{ value?: string }> }> }
+    return r.content?.[0]?.content?.[0]?.value ?? ''
+  }
+  return ''
+}
+
+function richTextToPlain(rich: unknown): string {
+  if (!rich || typeof rich !== 'object') return ''
+  const root = rich as { content?: unknown[] }
+  const parts: string[] = []
+  const walk = (node: unknown) => {
+    if (!node) return
+    const n = node as { value?: unknown; content?: unknown[] }
+    if (typeof n.value === 'string') parts.push(n.value)
+    if (Array.isArray(n.content)) n.content.forEach(walk)
+  }
+  if (Array.isArray(root.content)) root.content.forEach(walk)
+  return parts.join(' ')
+}
+
+function getExcerpt(article: unknown, chars = 220): string {
+  const text = richTextToPlain(article).trim()
+  if (!text) return ''
+  return text.length > chars ? text.slice(0, chars).trimEnd() + '…' : text
+}
+
+function formatDate(raw: string): string {
+  try {
+    return new Date(raw).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  } catch { return '' }
+}
+
 function Writing() {
   const ref = useReveal()
+  const [essays, setEssays] = useState<EssayItem[]>([])
+  const [activeIdx, setActiveIdx] = useState(0)
+  const trackRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    getEssaysForHomepage().then(setEssays)
+  }, [])
+
+  const scrollToIdx = (idx: number) => {
+    const track = trackRef.current
+    if (!track) return
+    const card = track.children[idx] as HTMLElement
+    if (!card) return
+    track.scrollTo({ left: card.offsetLeft - track.offsetLeft, behavior: 'smooth' })
+    setActiveIdx(idx)
+  }
+
+  const handleScroll = () => {
+    const track = trackRef.current
+    if (!track || !track.children[0]) return
+    const cardWidth = (track.children[0] as HTMLElement).offsetWidth + 24
+    setActiveIdx(Math.round(track.scrollLeft / cardWidth))
+  }
+
   return (
-    <section id="writing" className="section section--gray">
+    <section id="writing" className="section section--dark">
       <div className="container">
         <div ref={ref} className="reveal">
-          <p className="section__eyebrow">WRITING</p>
+          <p className="section__eyebrow section__eyebrow--light">WRITING</p>
           <h2 className="section__headline">Thoughts &amp; ideas.</h2>
           <p className="section__sub">Where I share what I'm learning and thinking about.</p>
-          <div className="writing__list">
-            {articles.map((a) => (
+        </div>
+      </div>
+
+      <div className="writing-carousel-wrap">
+        <div className="writing-carousel" ref={trackRef} onScroll={handleScroll}>
+          {essays.map((essay, i) => {
+            const title = extractText(essay.title)
+            const date = formatDate(extractText(essay.publishDate as string))
+            const category = extractText(essay.category)
+            const excerpt = getExcerpt(essay.article)
+            const imgSrc = essay.blogImage
+              ? optimizeContentfulImageUrl(essay.blogImage, { width: 900 })
+              : ''
+            return (
               <RouterLink
-                key={a.id}
-                to="/essays"
-                className="article__item"
+                key={essay.id}
+                to={`/essays/${essay.id}`}
+                className="writing-card writing-card--bg"
+                style={imgSrc ? { backgroundImage: `url(${imgSrc})` } : undefined}
               >
-                <span className="article__date">{a.date}</span>
-                <div className="article__content">
-                  <h3 className="article__title">{a.title}</h3>
-                  <p className="article__subtitle">{a.subtitle}</p>
+                <div className="writing-card__overlay" />
+                <div className="writing-card__text">
+                  {(category || date) && (
+                    <p className="writing-card__meta">
+                      {category}{category && date ? ' · ' : ''}{date}
+                    </p>
+                  )}
+                  <h3 className="writing-card__title">{title}</h3>
+                  {excerpt && <p className="writing-card__excerpt">{excerpt}</p>}
+                  <span className="writing-card__cta">Read article ›</span>
                 </div>
-                <span className="article__arrow" aria-hidden="true">
-                  ›
-                </span>
               </RouterLink>
+            )
+          })}
+        </div>
+
+        {essays.length > 1 && (
+          <div className="writing-carousel__dots">
+            {essays.map((_, i) => (
+              <button
+                key={i}
+                className={`carousel-dot${i === activeIdx ? ' carousel-dot--active' : ''}`}
+                onClick={() => scrollToIdx(i)}
+                aria-label={`Article ${i + 1}`}
+              />
             ))}
           </div>
-          <RouterLink to="/essays" className="cta-link">
-            All articles ›
-          </RouterLink>
-        </div>
+        )}
+      </div>
+
+      <div className="container writing-carousel__footer">
+        <RouterLink to="/essays" className="cta-link">All articles ›</RouterLink>
       </div>
     </section>
   )
@@ -473,7 +549,7 @@ function Contact() {
               LinkedIn
             </a>
             <span aria-hidden="true">·</span>
-            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+            <a href="/cv.pdf" target="_blank" rel="noopener noreferrer">
               Resume
             </a>
           </div>
@@ -490,21 +566,19 @@ function Footer() {
     <footer className="footer">
       <div className="container">
         <div className="footer__inner">
-          <p className="footer__copy">© 2026 Markian Mumba. All rights reserved.</p>
+          <div className="footer__brand">
+            <p className="footer__brand-name">Markian.</p>
+            <p className="footer__brand-tag">Engineer · Learner · Philosopher</p>
+          </div>
           <div className="footer__links">
-            <a href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">
-              GitHub
-            </a>
-            <a
-              href="https://www.linkedin.com/in/markian-mumba-67231517a/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              LinkedIn
-            </a>
+            <a href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/in/markian-mumba-67231517a/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://x.com/markmumba" target="_blank" rel="noopener noreferrer">X</a>
             <a href="mailto:mumbamarkian@gmail.com">Email</a>
+            <a href="/cv.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
           </div>
         </div>
+        <p className="footer__copy">© 2026 Markian Mumba. All rights reserved.</p>
       </div>
     </footer>
   )
@@ -518,10 +592,10 @@ function HomePage() {
       <Nav />
       <main>
         <Hero />
+        <Writing />
         <About />
         <Skills />
         <Projects />
-        <Writing />
         <Contact />
       </main>
       <Footer />
@@ -532,11 +606,13 @@ function HomePage() {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/essays" element={<EssaysPage />} />
-        <Route path="/essays/:id" element={<ArticlePage />} />
-      </Routes>
+      <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/essays" element={<EssaysPage />} />
+          <Route path="/essays/:id" element={<ArticlePage />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

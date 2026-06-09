@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import 'highlight.js/styles/atom-one-dark.css'
 import hljs from 'highlight.js/lib/core'
 import java from 'highlight.js/lib/languages/java'
 import javascript from 'highlight.js/lib/languages/javascript'

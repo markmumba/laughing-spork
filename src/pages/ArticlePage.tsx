@@ -191,7 +191,7 @@ export default function ArticlePage() {
           {imageUrl && (
             <div className="article-hero-wrap">
               <figure className="article-hero-image">
-                <img src={imageUrl} alt={essay.blogImageAlt || title} />
+                <img src={imageUrl} alt={essay.blogImageAlt || title} loading="eager" decoding="async" />
               </figure>
               {!!essay.blogImageOwner && (
                 <p className="article-hero-caption">{extractText(essay.blogImageOwner)}</p>
