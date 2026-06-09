@@ -459,7 +459,7 @@ function Writing() {
 
       <div className="writing-carousel-wrap">
         <div className="writing-carousel" ref={trackRef} onScroll={handleScroll}>
-          {essays.map((essay, i) => {
+          {essays.map((essay) => {
             const title = extractText(essay.title)
             const date = formatDate(extractText(essay.publishDate as string))
             const category = extractText(essay.category)
