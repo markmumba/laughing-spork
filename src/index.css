@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=Sora:wght@300;400;500;600;700;800&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --font-display: 'Sora', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --ease-enter: cubic-bezier(0.0, 0.0, 0.2, 1.0);
+  --ease-exit: cubic-bezier(0.4, 0.0, 1.0, 1.0);
+  --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1.0);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #000;
+  color: #1d1d1f;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 { margin: 0; }
+p { margin: 0; }
+ul { margin: 0; padding: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
