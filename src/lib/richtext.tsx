@@ -2,6 +2,7 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import { BLOCKS, MARKS, INLINES } from '@contentful/rich-text-types'
 import type { Document, Block, Inline } from '@contentful/rich-text-types'
 import React from 'react'
+import { Link } from 'react-router-dom'
 import CodeBlock from '../components/CodeBlock'
 
 interface TextNode {
@@ -135,11 +136,11 @@ const options = {
         {children}
       </a>
     ),
-    [INLINES.ENTRY_HYPERLINK]: (node: Block | Inline, children: React.ReactNode) => (
-      <a href={`/essays/${(node as { data?: { target?: { sys?: { id?: string } } } }).data?.target?.sys?.id}`}>
-        {children}
-      </a>
-    ),
+    [INLINES.ENTRY_HYPERLINK]: (node: Block | Inline, children: React.ReactNode) => {
+      const target = (node as { data?: { target?: { sys?: { id?: string }; fields?: { id?: unknown } } } }).data?.target
+      const id = target?.fields?.id != null ? String(target.fields.id) : target?.sys?.id
+      return <Link to={`/essays/${id}`}>{children}</Link>
+    },
     [INLINES.ASSET_HYPERLINK]: (node: Block | Inline, children: React.ReactNode) => (
       <a
         href={(node as { data?: { target?: { fields?: { file?: { url?: string } } } } }).data?.target?.fields?.file?.url}
@@ -157,7 +158,7 @@ const options = {
       const src = rawUrl.startsWith('//') ? `https:${rawUrl}` : rawUrl
       return (
         <figure>
-          <img src={src} alt={description || title || ''} loading="lazy" decoding="async" />
+          <img src={src} alt={description || title || ''} loading="lazy" decoding="async" width="800" height="533" />
           {title && <figcaption>{title}</figcaption>}
         </figure>
       )

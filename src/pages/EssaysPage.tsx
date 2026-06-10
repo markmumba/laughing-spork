@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getEssays, type EssayItem } from '../lib/contentful'
 import { optimizeContentfulImageUrl } from '../lib/contentful-image'
+import { usePageMeta } from '../lib/usePageMeta'
+import './EssaysPage.css'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -85,49 +87,71 @@ function HeroCard({ essay }: { essay: EssayItem }) {
   )
 }
 
-// ─── Article Row ─────────────────────────────────────────────────────────────
+// ─── Article Card ─────────────────────────────────────────────────────────────
 
-function EssayRow({ essay }: { essay: EssayItem }) {
+function EssayCard({ essay }: { essay: EssayItem }) {
   const title = extractText(essay.title)
   const date = extractText(essay.publishDate as string)
   const category = extractText(essay.category)
   const mins = readTime(essay.article)
-  const excerpt = getExcerpt(essay.article)
-  const imgSrc = essay.blogImage ? optimizeContentfulImageUrl(essay.blogImage, { width: 400 }) : ''
+  const excerpt = getExcerpt(essay.article, 300)
+  const imgSrc = essay.blogImage ? optimizeContentfulImageUrl(essay.blogImage, { width: 600 }) : ''
 
   return (
-    <Link to={`/essays/${essay.id}`} className="essay-item">
-      <div className="essay-item__content">
-        {category && <p className="essay-item__eyebrow">{category}</p>}
-        <h2 className="essay-item__title">{title}</h2>
-        {excerpt && <p className="essay-item__excerpt">{excerpt}</p>}
-        <div className="essay-item__meta">
-          <span>{formatDate(date)}</span>
-          <span className="essay-item__meta-dot">·</span>
-          <span>{mins} min read</span>
-          {essay.tags && essay.tags.length > 0 && (
-            <>
-              <span className="essay-item__meta-dot">·</span>
-              <span className="essay-item__tag">{essay.tags[0]}</span>
-            </>
-          )}
-        </div>
+    <Link to={`/essays/${essay.id}`} className="essay-card">
+      <div className="essay-card__img-wrap">
+        {imgSrc
+          ? <img src={imgSrc} alt={essay.blogImageAlt || title} loading="lazy" decoding="async" width="600" height="400" className="essay-card__img" />
+          : <div className="essay-card__img-placeholder" />
+        }
+        {category && <span className="essay-card__badge">{category}</span>}
       </div>
-      {imgSrc && (
-        <div className="essay-item__image">
-          <img src={imgSrc} alt={essay.blogImageAlt || title} loading="lazy" decoding="async" />
+      <div className="essay-card__body">
+        <div>
+          <h3 className="essay-card__title">{title}</h3>
+          {excerpt && <p className="essay-card__excerpt">{excerpt}</p>}
         </div>
-      )}
+        <p className="essay-card__meta">
+          {formatDate(date)}
+          {date && <span className="essay-card__dot">·</span>}
+          {mins} min read
+        </p>
+      </div>
     </Link>
+  )
+}
+
+// ─── Pagination ───────────────────────────────────────────────────────────────
+
+const PER_PAGE = 7
+
+function Pagination({ page, total, onPage }: { page: number; total: number; onPage: (p: number) => void }) {
+  if (total <= 1) return null
+  const pages = Array.from({ length: total }, (_, i) => i + 1)
+  return (
+    <nav className="essays-pagination" aria-label="Page navigation">
+      <button className="essays-pagination__btn" disabled={page === 1} onClick={() => onPage(page - 1)} aria-label="Previous page">←</button>
+      {pages.map((p) => (
+        <button
+          key={p}
+          className={`essays-pagination__btn${p === page ? ' essays-pagination__btn--active' : ''}`}
+          onClick={() => onPage(p)}
+          aria-current={p === page ? 'page' : undefined}
+        >{p}</button>
+      ))}
+      <button className="essays-pagination__btn" disabled={page === total} onClick={() => onPage(page + 1)} aria-label="Next page">→</button>
+    </nav>
   )
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function EssaysPage() {
+  usePageMeta({ title: 'Writing', description: 'Thoughts and ideas on distributed systems, engineering craft, and software philosophy.' })
   const [essays, setEssays] = useState<EssayItem[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     getEssays().then((data) => {
@@ -135,6 +159,9 @@ export default function EssaysPage() {
       setLoading(false)
     })
   }, [])
+
+  // Reset to page 1 when search changes
+  useEffect(() => { setPage(1) }, [query])
 
   const filtered = essays.filter((e) => {
     if (!query) return true
@@ -144,8 +171,16 @@ export default function EssaysPage() {
     return title.includes(q) || tags.some((t) => t.includes(q))
   })
 
-  const heroEssay = !query && filtered.length > 0 ? filtered[0] : null
-  const listEssays = !query && filtered.length > 0 ? filtered.slice(1) : filtered
+  const totalPages = Math.ceil(filtered.length / PER_PAGE)
+  const pageSlice = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
+
+  const heroEssay = page === 1 && !query && pageSlice.length > 0 ? pageSlice[0] : null
+  const listEssays = heroEssay ? pageSlice.slice(1) : pageSlice
+
+  const handlePage = (p: number) => {
+    setPage(p)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   return (
     <div className="essays-page">
@@ -176,6 +211,9 @@ export default function EssaysPage() {
           <input
             className="essays-search"
             type="search"
+            name="search"
+            aria-label="Search articles"
+            autoComplete="off"
             placeholder="Search articles…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -196,8 +234,22 @@ export default function EssaysPage() {
           ) : (
             <>
               {heroEssay && <HeroCard essay={heroEssay} />}
-              {listEssays.map((e) => <EssayRow key={e.id} essay={e} />)}
+              {listEssays.length > 0 && (
+                <>
+                  {heroEssay && (
+                    <div className="essays-archive-divider">
+                      <span>More writing</span>
+                    </div>
+                  )}
+                  <div className="essays-cards-grid">
+                    {listEssays.map((e) => <EssayCard key={e.id} essay={e} />)}
+                  </div>
+                </>
+              )}
             </>
+          )}
+          {!loading && totalPages > 1 && (
+            <Pagination page={page} total={totalPages} onPage={handlePage} />
           )}
         </div>
       </main>

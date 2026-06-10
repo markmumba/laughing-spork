@@ -1,0 +1,253 @@
+.hero {
+  min-height: 100svh;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 22px 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 55% at 88% 12%, rgba(50, 70, 220, 0.13) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 55% at 12% 88%, rgba(110, 50, 180, 0.1) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* ── Stickers ── */
+
+@keyframes stickerEnter {
+  from { opacity: 0; transform: translateY(10px) scale(0.88); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+@keyframes stickerFloat1 {
+  0%,100% { transform: translateY(0)    rotate(-4deg); }
+  50%     { transform: translateY(-13px) rotate(-1deg); }
+}
+@keyframes stickerFloat2 {
+  0%,100% { transform: translateY(0)    rotate(3deg); }
+  50%     { transform: translateY(-10px) rotate(5deg); }
+}
+@keyframes stickerFloat3 {
+  0%,100% { transform: translateY(0)    rotate(-1deg); }
+  50%     { transform: translateY(-16px) rotate(2deg); }
+}
+@keyframes stickerFloat4 {
+  0%,100% { transform: translateY(0)    rotate(5deg); }
+  50%     { transform: translateY(-11px) rotate(2deg); }
+}
+@keyframes stickerFloat5 {
+  0%,100% { transform: translateY(0)    rotate(-3deg); }
+  50%     { transform: translateY(-9px)  rotate(-5deg); }
+}
+@keyframes stickerFloat6 {
+  0%,100% { transform: translateY(0)    rotate(2deg); }
+  50%     { transform: translateY(-14px) rotate(4deg); }
+}
+
+.hero-sticker {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 980px;
+  padding: 9px 16px 9px 11px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.hero-sticker__icon {
+  font-size: 15px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* Enter delay + float loop per sticker */
+.hero-sticker--1 { animation: stickerEnter .6s ease-out 1.0s both, stickerFloat1 4.5s ease-in-out 1.6s infinite; }
+.hero-sticker--2 { animation: stickerEnter .6s ease-out 1.4s both, stickerFloat2 5.2s ease-in-out 2.0s infinite; }
+.hero-sticker--3 { animation: stickerEnter .6s ease-out 1.8s both, stickerFloat3 4.0s ease-in-out 2.4s infinite; }
+.hero-sticker--4 { animation: stickerEnter .6s ease-out 1.2s both, stickerFloat4 5.8s ease-in-out 1.8s infinite; }
+.hero-sticker--5 { animation: stickerEnter .6s ease-out 1.6s both, stickerFloat5 4.7s ease-in-out 2.2s infinite; }
+.hero-sticker--6 { animation: stickerEnter .6s ease-out 2.0s both, stickerFloat6 5.4s ease-in-out 2.6s infinite; }
+
+@media (max-width: 860px) {
+  .hero-sticker--3,
+  .hero-sticker--4,
+  .hero-sticker--6 { display: none; }
+}
+@media (max-width: 600px) {
+  .hero-sticker { display: none; }
+}
+
+/* Line grid */
+.hero__stars-a {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Maze-solving path canvas */
+.hero-maze-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Vignette — fades grid at edges so it doesn't feel wallpaper-y */
+.hero__stars-b {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, #000 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+.hero__inner {
+  max-width: 980px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.hero__eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0 0 52px;
+  animation: fadeUp 0.7s var(--ease-enter) 0.05s both;
+}
+
+.hero__name {
+  font-family: var(--font-display);
+  font-size: clamp(38px, 11.5vw, 140px);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  color: #fff;
+  margin: 0 0 60px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero__line {
+  display: block;
+  animation: fadeUp 0.9s var(--ease-enter) both;
+}
+
+.hero__line:nth-child(1) { animation-delay: 0.1s; }
+.hero__line:nth-child(2) {
+  animation-delay: 0.22s;
+  margin-left: clamp(20px, 4.5vw, 72px);
+}
+.hero__line:nth-child(3) {
+  animation-delay: 0.34s;
+  margin-left: clamp(40px, 9vw, 144px);
+}
+
+.hero__meta {
+  animation: fadeUp 0.8s var(--ease-enter) 0.5s both;
+  margin-bottom: 44px;
+}
+
+.hero__subtitle {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+}
+
+.hero__desc {
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0;
+  line-height: 1.65;
+}
+
+.hero__ctas {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.8s var(--ease-enter) 0.62s both;
+}
+
+.hero__cta {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  padding: 12px 26px;
+  border-radius: 980px;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.hero__cta--primary {
+  background: #fff;
+  color: #000;
+}
+
+.hero__cta--primary:hover { background: rgba(255,255,255,0.85); }
+
+.hero__cta--ghost {
+  background: transparent;
+  color: rgba(255,255,255,0.85);
+  border: 1px solid rgba(255,255,255,0.28);
+}
+
+.hero__cta--ghost:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.5);
+}
+
+.hero__scroll {
+  position: absolute;
+  bottom: 44px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.25);
+  font-size: 20px;
+  animation: scrollBounce 2.5s ease-in-out infinite 1.8s, fadeUp 0.6s ease 1.4s both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(7px); }
+}

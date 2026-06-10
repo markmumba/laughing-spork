@@ -1,0 +1,169 @@
+/* ── Layout ── */
+.contact__layout {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+}
+
+.contact__text { flex: 1; }
+
+.contact__headline {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 7vw, 80px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: #fff;
+  margin: 0 0 28px;
+}
+
+.contact__body {
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.42);
+  margin: 0 0 40px;
+  font-weight: 300;
+}
+
+.contact__links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.contact__links a {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contact__links a:hover { color: rgba(255,255,255,0.85); }
+
+.contact__links span {
+  color: rgba(255,255,255,0.18);
+  font-size: 12px;
+}
+
+/* ── Envelope wrapper ── */
+.contact__env {
+  flex-shrink: 0;
+  width: 400px;
+  height: 260px;
+  position: relative;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.contact__env--open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── SVG layers ── */
+.env-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.env-svg--body { z-index: 1; }
+.env-svg--flap { z-index: 3; }
+
+/* ── Flap collapse ── */
+.env-flap-path {
+  transform-box: view-box;
+  transform-origin: 200px 1.5px;
+  transform: scaleY(1);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.25s;
+}
+
+.contact__env--open .env-flap-path {
+  transform: scaleY(0);
+}
+
+/* ── Letter (slides up) ── */
+.env-letter {
+  position: absolute;
+  z-index: 2;
+  width: 330px;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-48%);
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e4;
+  padding: 22px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  text-decoration: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+
+  opacity: 0;
+  transition:
+    opacity   0.35s ease                              0.65s,
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1)   0.60s,
+    box-shadow 0.25s ease;
+}
+
+.contact__env--open .env-letter {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-165%);
+}
+
+.env-letter:hover {
+  box-shadow: 0 16px 48px rgba(0,0,0,0.14);
+}
+
+.env-letter__rule {
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: #000;
+  border-radius: 1px;
+  margin-bottom: 4px;
+}
+
+.env-letter__eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #aeaeb2;
+}
+
+.env-letter__email {
+  font-family: var(--font-display);
+  font-size: clamp(15px, 1.6vw, 19px);
+  font-weight: 700;
+  color: #000;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.env-letter__cta {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #0066cc;
+  margin-top: 2px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .contact__layout  { flex-direction: column; gap: 64px; }
+  .contact__text    { text-align: center; }
+  .contact__links   { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .contact__env     { width: 320px; height: 208px; }
+  .env-letter       { width: 268px; padding: 18px 20px 20px; }
+  .env-letter__email { font-size: 15px; }
+}

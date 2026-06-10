@@ -1,0 +1,270 @@
+.skills-section {
+  background: #050508;
+  padding-bottom: 80px;
+  overflow: hidden;
+}
+
+.skills-section .section__headline { color: #fff; }
+.skills-section .section__eyebrow--light { color: rgba(255,255,255,0.45); }
+
+/* ── Wrapper ── */
+.skill-tree-wrap {
+  margin-top: 52px;
+  width: 100%;
+}
+
+/* ── SVG ── */
+.skill-tree-svg {
+  display: block;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+/* ── Ghost trunk (faint full line, shows on enter) ── */
+.st-trunk-ghost {
+  stroke: rgba(255,255,255,0.08);
+  stroke-width: 2.5;
+  fill: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.skill-tree--visible .st-trunk-ghost {
+  opacity: 1;
+}
+
+/* ── Shooting-star head on trunk ── */
+.st-trunk-head {
+  stroke: rgba(255,255,255,0.95);
+  stroke-width: 3.5;
+  fill: none;
+  stroke-dasharray: var(--head-frac) var(--gap-frac);
+  stroke-dashoffset: 0;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.9)) drop-shadow(0 0 14px rgba(255,255,255,0.6));
+}
+.skill-tree--visible .st-trunk-head {
+  animation-name: st-head-travel;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  animation-duration: var(--st-dur, 0.5s);
+  animation-delay: var(--st-delay, 0s);
+}
+
+/* ── Trunk segments (sequential) ── */
+.st-trunk-seg {
+  stroke: rgba(255,255,255,0.28);
+  stroke-width: 2.5;
+  fill: none;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.35));
+}
+
+.skill-tree--visible .st-trunk-seg {
+  animation-name: st-draw;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  animation-duration: var(--st-dur, 0.5s);
+  animation-delay: var(--st-delay, 0s);
+}
+
+/* ── Origin dot ── */
+.st-origin {
+  fill: rgba(255,255,255,0.65);
+  opacity: 0;
+  filter: drop-shadow(0 0 5px rgba(255,255,255,0.8)) drop-shadow(0 0 12px rgba(255,255,255,0.4));
+}
+
+.skill-tree--visible .st-origin {
+  animation: st-fade 0.4s ease forwards 0.3s;
+}
+
+/* ── Trunk tick marks ── */
+.st-tick {
+  stroke: rgba(255,255,255,0.18);
+  stroke-width: 1;
+  opacity: 0;
+}
+
+.st-tick--major {
+  stroke: rgba(255,255,255,0.35);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.25));
+}
+
+.skill-tree--visible .st-tick {
+  animation: st-fade 0.12s ease forwards;
+}
+
+/* ── Ghost branch paths (faint full shape, shows on enter) ── */
+.st-branch-ghost {
+  stroke: var(--branch-color);
+  stroke-width: 2;
+  fill: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.skill-tree--visible .st-branch-ghost {
+  opacity: 0.12;
+}
+
+/* ── Shooting-star head on branches ── */
+.st-branch-head {
+  stroke: var(--branch-color);
+  stroke-width: 3;
+  fill: none;
+  stroke-dasharray: var(--head-frac) var(--gap-frac);
+  stroke-dashoffset: 0;
+  opacity: 0;
+  filter: drop-shadow(0 0 5px var(--branch-color)) drop-shadow(0 0 16px var(--branch-color));
+}
+.skill-tree--visible .st-branch-head {
+  animation-name: st-head-travel;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  animation-duration: var(--st-dur, 0.8s);
+  animation-delay: var(--st-delay, 0s);
+}
+
+/* ── Combined branch path (connector + rounded corner + track) ── */
+.st-branch-path {
+  stroke: var(--branch-color);
+  stroke-width: 2;
+  fill: none;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.7;
+  filter: drop-shadow(0 0 5px var(--branch-color)) drop-shadow(0 0 12px var(--branch-color));
+}
+
+.skill-tree--visible .st-branch-path {
+  animation: st-draw 1.30s ease-out forwards;
+}
+
+/* ── Branch label (floats on outer edge of track) ── */
+.st-branch-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  opacity: 0;
+}
+
+.skill-tree--visible .st-branch-label {
+  animation: st-fade 0.4s ease forwards;
+}
+
+/* ── Fork dot ── */
+.st-fork-dot {
+  fill: var(--branch-color);
+  opacity: 0;
+  filter: drop-shadow(0 0 6px var(--branch-color)) drop-shadow(0 0 14px var(--branch-color));
+}
+
+.skill-tree--visible .st-fork-dot {
+  animation: st-fade 0.3s ease forwards;
+}
+
+/* ── Node ── */
+.st-node {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.skill-tree--visible .st-node {
+  animation: st-node-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.st-node__dot {
+  fill: var(--branch-color);
+  filter: drop-shadow(0 0 5px var(--branch-color)) drop-shadow(0 0 14px var(--branch-color));
+}
+
+.st-node__label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  fill: rgba(255,255,255,0.75);
+  pointer-events: none;
+  letter-spacing: 0.01em;
+}
+
+/* ── Keyframes ── */
+@keyframes st-draw {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes st-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes st-node-in {
+  from { opacity: 0; transform: scale(0.3); }
+  to   { opacity: 1; transform: scale(1);   }
+}
+
+@keyframes st-head-travel {
+  0%   { opacity: 1;   stroke-dashoffset: 0; }
+  82%  { opacity: 1; }
+  100% { opacity: 0;   stroke-dashoffset: calc(-1 * var(--gap-frac)); }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .skill-tree--visible .st-trunk-seg,
+  .skill-tree--visible .st-branch-path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .skill-tree--visible .st-origin,
+  .skill-tree--visible .st-fork-dot,
+  .skill-tree--visible .st-tick,
+  .skill-tree--visible .st-branch-label,
+  .skill-tree--visible .st-node {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ── Mobile fallback ── */
+.skill-tree-fallback {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 24px;
+}
+
+.st-fb-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin: 0 0 8px;
+}
+
+.st-fb-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.st-fb-pill {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 16px;
+  border-radius: 980px;
+  border: 1px solid;
+  cursor: default;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .skill-tree-svg      { display: none; }
+  .skill-tree-fallback { display: flex; }
+}

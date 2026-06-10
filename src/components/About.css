@@ -1,0 +1,126 @@
+.about__grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 72px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .about__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+
+.about__body {
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.7;
+  color: #3a3a3c;
+  margin: 0 0 22px;
+  font-weight: 300;
+  max-width: 62ch;
+}
+
+.about__quote {
+  margin: 40px 0 0;
+  padding: 32px 0 0;
+  border-top: 1px solid #e5e5ea;
+}
+
+.about__quote p {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.5;
+  color: #1d1d1f;
+  margin: 0 0 14px;
+  letter-spacing: -0.015em;
+}
+
+.about__quote cite {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: #6e6e73;
+  font-style: normal;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.about__card {
+  background: #f5f5f7;
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 14px;
+}
+
+.about__card:last-child { margin-bottom: 0; }
+
+.about__card-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  color: #6e6e73;
+  margin: 0 0 18px;
+}
+
+.about__focus-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.about__focus-list li {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: #1d1d1f;
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.about__focus-list li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: #aeaeb2;
+}
+
+.about__exp-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.about__exp-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #e5e5ea;
+}
+
+.about__exp-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.exp__role {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: #1d1d1f;
+}
+
+.exp__company {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: #aeaeb2;
+  font-weight: 400;
+  white-space: nowrap;
+}

@@ -111,8 +111,15 @@ export async function getEssayById(id: string): Promise<EssayItem | null> {
       'fields.id': id,
       limit: 1,
     } as Parameters<typeof client.getEntries>[0])
-    if (response.items.length === 0) return null
-    return mapItem(response.items[0])
+    if (response.items.length > 0) return mapItem(response.items[0])
+
+    // Fallback: id might be a Contentful sys.id (from entry hyperlinks in rich text)
+    try {
+      const entry = await client.getEntry(id)
+      if (entry) return mapItem(entry)
+    } catch { /* not found by sys.id */ }
+
+    return null
   } catch (error) {
     console.error('Error fetching essay by id:', error)
     return null

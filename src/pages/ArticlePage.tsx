@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { getEssayById, type EssayItem } from '../lib/contentful'
 import { optimizeContentfulImageUrl } from '../lib/contentful-image'
 import RichTextRenderer from '../lib/richtext'
+import './ArticlePage.css'
+import { usePageMeta } from '../lib/usePageMeta'
 import type { Document } from '@contentful/rich-text-types'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -106,6 +108,10 @@ export default function ArticlePage() {
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
 
+  const metaTitle = essay ? extractText(essay.title) : 'Article'
+  const metaDesc = essay ? richTextToPlain(essay.article).slice(0, 160).trimEnd() : undefined
+  usePageMeta({ title: metaTitle, description: metaDesc, image: essay?.blogImage || undefined })
+
   useEffect(() => {
     if (!id) return
     window.scrollTo(0, 0)
@@ -191,7 +197,7 @@ export default function ArticlePage() {
           {imageUrl && (
             <div className="article-hero-wrap">
               <figure className="article-hero-image">
-                <img src={imageUrl} alt={essay.blogImageAlt || title} loading="eager" decoding="async" />
+                <img src={imageUrl} alt={essay.blogImageAlt || title} loading="eager" decoding="async" width="1600" height="900" />
               </figure>
               {!!essay.blogImageOwner && (
                 <p className="article-hero-caption">{extractText(essay.blogImageOwner)}</p>
@@ -209,7 +215,7 @@ export default function ArticlePage() {
             {nugget && (
               <aside className="nugget">
                 <p className="nugget__label">NUGGET OF WISDOM</p>
-                <p className="nugget__quote">"{nugget}"</p>
+                <p className="nugget__quote">{nugget}</p>
                 {nuggetAuthor && <cite className="nugget__cite">— {nuggetAuthor}</cite>}
               </aside>
             )}
