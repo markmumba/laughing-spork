@@ -1,24 +1,29 @@
-import { useRef, useEffect, useState } from 'react'
+import { lazy, Suspense, useRef, useEffect, useState, type CSSProperties } from 'react'
 import './Hero.css'
+
+const DeveloperKeyScene = lazy(() => import('./DeveloperKeyScene'))
 
 // ─── Scramble Text ────────────────────────────────────────────────────────────
 
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&'
 
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+function getScrambledText(text: string) {
+  return text.split('').map(char =>
+    /[A-Z0-9]/i.test(char)
+      ? SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+      : char
+  ).join('')
+}
+
 function ScrambleText({ text, delay = 0, duration = 1400 }: { text: string; delay?: number; duration?: number }) {
-  const [display, setDisplay] = useState(() =>
-    text.split('').map(char =>
-      /[A-Z0-9]/i.test(char)
-        ? SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-        : char
-    ).join('')
-  )
+  const [display, setDisplay] = useState(() => prefersReducedMotion() ? text : getScrambledText(text))
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setDisplay(text)
-      return
-    }
+    if (prefersReducedMotion()) return
 
     let startTime: number | null = null
     let rafId: number
@@ -178,29 +183,88 @@ function HeroMaze() {
   return <canvas ref={canvasRef} className="hero-maze-canvas" aria-hidden="true" />
 }
 
-// ─── Hero ─────────────────────────────────────────────────────────────────────
+// ─── Language Stickers ────────────────────────────────────────────────────────
 
-const STICKERS = [
-  { id: 1, icon: '☕', label: 'Java',        pos: { top: '9%',     left: '52%'  } },
-  { id: 2, icon: 'TS', label: 'TypeScript',  pos: { top: '6%',     right: '12%' } },
-  { id: 3, icon: '🍃', label: 'Spring Boot', pos: { top: '34%',    right: '5%'  } },
-  { id: 4, icon: '▲',  label: 'Next.js',     pos: { bottom: '32%', right: '10%' } },
-  { id: 5, icon: '🐳', label: 'Docker',      pos: { bottom: '18%', left: '48%'  } },
-  { id: 6, icon: '🗄️', label: 'PostgreSQL', pos: { bottom: '36%', left: '55%'  } },
+type StickerIcon = 'java' | 'typescript' | 'spring' | 'next' | 'docker' | 'postgres'
+
+interface Sticker {
+  id: number
+  icon: StickerIcon
+  label: string
+  pos: CSSProperties
+}
+
+const STICKERS: Sticker[] = [
+  { id: 1, icon: 'java', label: 'Java', pos: { top: '9%', left: '52%' } },
+  { id: 2, icon: 'typescript', label: 'TypeScript', pos: { top: '6%', right: '12%' } },
+  { id: 3, icon: 'spring', label: 'Spring Boot', pos: { top: '34%', right: '5%' } },
+  { id: 4, icon: 'next', label: 'Next.js', pos: { bottom: '32%', right: '10%' } },
+  { id: 5, icon: 'docker', label: 'Docker', pos: { bottom: '18%', left: '48%' } },
+  { id: 6, icon: 'postgres', label: 'PostgreSQL', pos: { bottom: '36%', left: '55%' } },
 ]
+
+function LanguageIcon({ icon }: { icon: StickerIcon }) {
+  switch (icon) {
+    case 'java':
+      return (
+        <svg viewBox="0 0 24 24" className="hero-sticker__svg" aria-hidden="true">
+          <path d="M7.4 13.2h8.8v1.1c0 2-1.5 3.6-3.5 3.6H11c-2 0-3.6-1.6-3.6-3.6v-1.1Z" fill="#f89820" />
+          <path d="M16.2 13.6h1.4c1 0 1.8.8 1.8 1.8s-.8 1.8-1.8 1.8h-2" fill="none" stroke="#f89820" strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M10 10.7c1.2-.8 1.2-1.7.2-2.7M13 10.7c1.4-.9 1.4-2 .2-3.1" fill="none" stroke="#fff" strokeWidth="1.35" strokeLinecap="round" />
+        </svg>
+      )
+    case 'typescript':
+      return (
+        <svg viewBox="0 0 24 24" className="hero-sticker__svg" aria-hidden="true">
+          <rect x="4" y="4" width="16" height="16" rx="3" fill="#3178c6" />
+          <path d="m10 9-4 3 4 3M14 9l4 3-4 3" fill="none" stroke="#fff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )
+    case 'spring':
+      return (
+        <svg viewBox="0 0 24 24" className="hero-sticker__svg" aria-hidden="true">
+          <path d="M19.8 5.4C13.2 5.5 7.2 8.7 6.6 15.2c-.2 2.1 1.3 3.7 3.5 3.7 5.5 0 9.2-5.6 9.7-13.5Z" fill="#6db33f" />
+          <path d="M8 16.4c3.8-1 6.4-3.2 8.6-6.7" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      )
+    case 'next':
+      return (
+        <svg viewBox="0 0 24 24" className="hero-sticker__svg" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5" fill="#fff" />
+          <path d="M8.2 15.8V8.3l7.9 8.9M15.8 8.2v7.6" fill="none" stroke="#050505" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )
+    case 'docker':
+      return (
+        <svg viewBox="0 0 24 24" className="hero-sticker__svg" aria-hidden="true">
+          <path d="M5.2 11.6h3v-2h3v2h3v-2h3v2h1.6c-.6 3.6-3.4 5.8-7.1 5.8H9.3c-2.3 0-4-1.2-4.9-3.1" fill="#2496ed" />
+          <path d="M7 8.2h2.3v2.1H7zM10.2 8.2h2.3v2.1h-2.3zM13.4 8.2h2.3v2.1h-2.3zM10.2 5.3h2.3v2.1h-2.3z" fill="#fff" opacity="0.9" />
+        </svg>
+      )
+    case 'postgres':
+      return (
+        <svg viewBox="0 0 24 24" className="hero-sticker__svg" aria-hidden="true">
+          <path d="M6.4 7.8c0-1.7 2.5-3.1 5.6-3.1s5.6 1.4 5.6 3.1v8.4c0 1.7-2.5 3.1-5.6 3.1s-5.6-1.4-5.6-3.1V7.8Z" fill="#336791" />
+          <ellipse cx="12" cy="7.8" rx="5.6" ry="3.1" fill="none" stroke="#fff" strokeWidth="1.25" />
+          <path d="M6.4 11.8c0 1.7 2.5 3.1 5.6 3.1s5.6-1.4 5.6-3.1" fill="none" stroke="#fff" strokeWidth="1.25" opacity="0.82" />
+        </svg>
+      )
+  }
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null)
+  const [blogHrefs, setBlogHrefs] = useState<string[]>(['/essays'])
 
   useEffect(() => {
     const hero = heroRef.current
-    if (!hero) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (!hero || prefersReducedMotion()) return
 
-    const THRESHOLD = 140
-    const MAX_PUSH = 80
-    const SPRING = 'translate 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)'
-
+    const threshold = 140
+    const maxPush = 80
+    const spring = 'translate 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)'
     const origins = new Map<HTMLElement, { x: number; y: number }>()
 
     const cacheOrigins = () => {
@@ -208,62 +272,85 @@ export default function Hero() {
       hero.querySelectorAll<HTMLElement>('.hero-sticker').forEach((el) => {
         const prev = el.style.translate
         el.style.translate = '0px 0px'
-        const r = el.getBoundingClientRect()
-        origins.set(el, { x: r.left + r.width / 2, y: r.top + r.height / 2 })
+        const rect = el.getBoundingClientRect()
+        origins.set(el, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 })
         el.style.translate = prev
       })
     }
 
-    const cacheTimer = setTimeout(cacheOrigins, 2200)
+    const cacheTimer = window.setTimeout(cacheOrigins, 2200)
     window.addEventListener('resize', cacheOrigins)
 
-    let rafId: number
-    let mx = -9999
-    let my = -9999
+    let rafId = 0
+    let pointerX = -9999
+    let pointerY = -9999
 
     const update = () => {
       hero.querySelectorAll<HTMLElement>('.hero-sticker').forEach((el) => {
-        const o = origins.get(el)
-        if (!o) return
-        const dx = mx - o.x
-        const dy = my - o.y
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < THRESHOLD && dist > 0) {
-          const strength = (1 - dist / THRESHOLD) * MAX_PUSH
+        const origin = origins.get(el)
+        if (!origin) return
+
+        const dx = pointerX - origin.x
+        const dy = pointerY - origin.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+
+        if (distance < threshold && distance > 0) {
+          const strength = (1 - distance / threshold) * maxPush
           const angle = Math.atan2(dy, dx)
           el.style.transition = 'none'
           el.style.translate = `${-Math.cos(angle) * strength}px ${-Math.sin(angle) * strength}px`
-        } else {
-          el.style.transition = SPRING
-          el.style.translate = '0px 0px'
+          return
         }
+
+        el.style.transition = spring
+        el.style.translate = '0px 0px'
       })
     }
 
-    const onMove = (e: MouseEvent) => {
-      mx = e.clientX
-      my = e.clientY
-      cancelAnimationFrame(rafId)
-      rafId = requestAnimationFrame(update)
+    const onMove = (event: MouseEvent) => {
+      pointerX = event.clientX
+      pointerY = event.clientY
+      window.cancelAnimationFrame(rafId)
+      rafId = window.requestAnimationFrame(update)
     }
 
     const onLeave = () => {
-      mx = -9999
-      my = -9999
+      pointerX = -9999
+      pointerY = -9999
       hero.querySelectorAll<HTMLElement>('.hero-sticker').forEach((el) => {
-        el.style.transition = SPRING
+        el.style.transition = spring
         el.style.translate = '0px 0px'
       })
     }
 
     hero.addEventListener('mousemove', onMove)
     hero.addEventListener('mouseleave', onLeave)
+
     return () => {
-      clearTimeout(cacheTimer)
-      cancelAnimationFrame(rafId)
+      window.clearTimeout(cacheTimer)
+      window.cancelAnimationFrame(rafId)
       window.removeEventListener('resize', cacheOrigins)
       hero.removeEventListener('mousemove', onMove)
       hero.removeEventListener('mouseleave', onLeave)
+    }
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+
+    import('../lib/contentful')
+      .then(({ getEssays }) => getEssays())
+      .then((essays) => {
+        if (cancelled) return
+        const hrefs = essays.map((essay) => `/essays/${essay.id}`).filter(Boolean)
+        if (hrefs.length > 0) setBlogHrefs(hrefs)
+      })
+      .catch(() => {
+        if (!cancelled) setBlogHrefs(['/essays'])
+      })
+
+    return () => {
+      cancelled = true
     }
   }, [])
 
@@ -271,17 +358,24 @@ export default function Hero() {
     <section id="hero" className="hero" ref={heroRef}>
       <div className="hero__stars-a" aria-hidden="true" />
       <HeroMaze />
+      <div className="hero__key-scene" aria-label="3D keys spelling developer">
+        <Suspense fallback={null}>
+          <DeveloperKeyScene href="/essays" hrefs={blogHrefs} />
+        </Suspense>
+      </div>
       <div className="hero__stars-b" aria-hidden="true" />
 
-      {STICKERS.map((s) => (
+      {STICKERS.map((sticker) => (
         <div
-          key={s.id}
-          className={`hero-sticker hero-sticker--${s.id}`}
-          style={s.pos}
+          key={sticker.id}
+          className={`hero-sticker hero-sticker--${sticker.id}`}
+          style={sticker.pos}
           aria-hidden="true"
         >
-          <span className="hero-sticker__icon">{s.icon}</span>
-          <span>{s.label}</span>
+          <span className="hero-sticker__icon">
+            <LanguageIcon icon={sticker.icon} />
+          </span>
+          <span>{sticker.label}</span>
         </div>
       ))}
 

@@ -19,81 +19,93 @@
   pointer-events: none;
 }
 
-/* ── Stickers ── */
 
+/* Stickers */
 @keyframes stickerEnter {
   from { opacity: 0; transform: translateY(10px) scale(0.88); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
 @keyframes stickerFloat1 {
-  0%,100% { transform: translateY(0)    rotate(-4deg); }
-  50%     { transform: translateY(-13px) rotate(-1deg); }
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-13px) rotate(-1deg); }
 }
+
 @keyframes stickerFloat2 {
-  0%,100% { transform: translateY(0)    rotate(3deg); }
-  50%     { transform: translateY(-10px) rotate(5deg); }
+  0%, 100% { transform: translateY(0) rotate(3deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
 }
+
 @keyframes stickerFloat3 {
-  0%,100% { transform: translateY(0)    rotate(-1deg); }
-  50%     { transform: translateY(-16px) rotate(2deg); }
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-16px) rotate(2deg); }
 }
+
 @keyframes stickerFloat4 {
-  0%,100% { transform: translateY(0)    rotate(5deg); }
-  50%     { transform: translateY(-11px) rotate(2deg); }
+  0%, 100% { transform: translateY(0) rotate(5deg); }
+  50% { transform: translateY(-11px) rotate(2deg); }
 }
+
 @keyframes stickerFloat5 {
-  0%,100% { transform: translateY(0)    rotate(-3deg); }
-  50%     { transform: translateY(-9px)  rotate(-5deg); }
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-9px) rotate(-5deg); }
 }
+
 @keyframes stickerFloat6 {
-  0%,100% { transform: translateY(0)    rotate(2deg); }
-  50%     { transform: translateY(-14px) rotate(4deg); }
+  0%, 100% { transform: translateY(0) rotate(2deg); }
+  50% { transform: translateY(-14px) rotate(4deg); }
 }
 
 .hero-sticker {
   position: absolute;
+  z-index: 2;
   display: flex;
   align-items: center;
-  gap: 7px;
-  background: rgba(255,255,255,0.07);
+  gap: 8px;
+  padding: 8px 14px 8px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 980px;
+  background: rgba(0, 0, 0, 0.26);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.14);
-  border-radius: 980px;
-  padding: 9px 16px 9px 11px;
+  color: rgba(255, 255, 255, 0.78);
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
-  color: rgba(255,255,255,0.85);
+  letter-spacing: 0;
+  line-height: 1;
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
-  z-index: 1;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .hero-sticker__icon {
-  font-size: 15px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 50%;
+  color: #fff;
   line-height: 1;
-  display: flex;
-  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
 }
 
-/* Enter delay + float loop per sticker */
-.hero-sticker--1 { animation: stickerEnter .6s ease-out 1.0s both, stickerFloat1 4.5s ease-in-out 1.6s infinite; }
-.hero-sticker--2 { animation: stickerEnter .6s ease-out 1.4s both, stickerFloat2 5.2s ease-in-out 2.0s infinite; }
-.hero-sticker--3 { animation: stickerEnter .6s ease-out 1.8s both, stickerFloat3 4.0s ease-in-out 2.4s infinite; }
-.hero-sticker--4 { animation: stickerEnter .6s ease-out 1.2s both, stickerFloat4 5.8s ease-in-out 1.8s infinite; }
-.hero-sticker--5 { animation: stickerEnter .6s ease-out 1.6s both, stickerFloat5 4.7s ease-in-out 2.2s infinite; }
-.hero-sticker--6 { animation: stickerEnter .6s ease-out 2.0s both, stickerFloat6 5.4s ease-in-out 2.6s infinite; }
+.hero-sticker__svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
 
-@media (max-width: 860px) {
-  .hero-sticker--3,
-  .hero-sticker--4,
-  .hero-sticker--6 { display: none; }
-}
-@media (max-width: 600px) {
-  .hero-sticker { display: none; }
-}
+.hero-sticker--1 { animation: stickerEnter 0.6s ease-out 1s both, stickerFloat1 4.5s ease-in-out 1.6s infinite; }
+.hero-sticker--2 { animation: stickerEnter 0.6s ease-out 1.4s both, stickerFloat2 5.2s ease-in-out 2s infinite; }
+.hero-sticker--3 { animation: stickerEnter 0.6s ease-out 1.8s both, stickerFloat3 4s ease-in-out 2.4s infinite; }
+.hero-sticker--4 { animation: stickerEnter 0.6s ease-out 1.2s both, stickerFloat4 5.8s ease-in-out 1.8s infinite; }
+.hero-sticker--5 { animation: stickerEnter 0.6s ease-out 1.6s both, stickerFloat5 4.7s ease-in-out 2.2s infinite; }
+.hero-sticker--6 { animation: stickerEnter 0.6s ease-out 2s both, stickerFloat6 5.4s ease-in-out 2.6s infinite; }
+
 
 /* Line grid */
 .hero__stars-a {
@@ -127,13 +139,31 @@
   z-index: 0;
 }
 
+.hero__key-scene {
+  position: absolute;
+  right: clamp(-210px, -10vw, -88px);
+  bottom: clamp(-86px, -6vh, -42px);
+  z-index: 1;
+  width: clamp(760px, 74vw, 1260px);
+  height: clamp(360px, 50vh, 600px);
+  transform: none;
+  opacity: 0.9;
+}
+
+.hero__key-scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 
 .hero__inner {
   max-width: 980px;
   margin: 0 auto;
   width: 100%;
   position: relative;
-  z-index: 1;
+  z-index: 3;
+  pointer-events: none;
 }
 
 .hero__eyebrow {
@@ -212,6 +242,7 @@
   padding: 12px 26px;
   border-radius: 980px;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  pointer-events: auto;
 }
 
 .hero__cta--primary {
@@ -242,6 +273,7 @@
   animation: scrollBounce 2.5s ease-in-out infinite 1.8s, fadeUp 0.6s ease 1.4s both;
 }
 
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -250,4 +282,34 @@
 @keyframes scrollBounce {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50%       { transform: translateX(-50%) translateY(7px); }
+}
+
+@media (max-width: 980px) {
+  .hero__key-scene {
+    right: -360px;
+    bottom: -70px;
+    width: 1080px;
+    height: 480px;
+    opacity: 0.58;
+  }
+
+  .hero-sticker--3,
+  .hero-sticker--4,
+  .hero-sticker--6 {
+    display: none;
+  }
+}
+
+@media (max-width: 734px) {
+  .hero__key-scene {
+    right: -500px;
+    bottom: -86px;
+    width: 1120px;
+    height: 470px;
+    opacity: 0.44;
+  }
+
+  .hero-sticker {
+    display: none;
+  }
 }
