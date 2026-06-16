@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getEssays, type EssayItem } from '../lib/contentful'
 import { optimizeContentfulImageUrl } from '../lib/contentful-image'
@@ -33,7 +33,7 @@ function richTextToPlain(rich: unknown): string {
 function formatDate(raw: string): string {
   try {
     return new Date(raw).toLocaleDateString('en-US', {
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       year: 'numeric',
     })
@@ -54,76 +54,87 @@ function getExcerpt(article: unknown, chars = 200): string {
   return text.length > chars ? text.slice(0, chars).trimEnd() + '…' : text
 }
 
-// ─── Hero Card ────────────────────────────────────────────────────────────────
+// ─── Article Card ─────────────────────────────────────────────────────────────
 
-function HeroCard({ essay }: { essay: EssayItem }) {
+function EssayCard({ essay, index }: { essay: EssayItem; index: number }) {
+  const ref = useRef<HTMLAnchorElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('is-visible')
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.08 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   const title = extractText(essay.title)
   const date = extractText(essay.publishDate as string)
   const category = extractText(essay.category)
+  const author = extractText(essay.author)
   const mins = readTime(essay.article)
-  const excerpt = getExcerpt(essay.article, 240)
+  const excerpt = getExcerpt(essay.article, 220)
   const imgSrc = essay.blogImage
-    ? optimizeContentfulImageUrl(essay.blogImage, { width: 1200 })
+    ? optimizeContentfulImageUrl(essay.blogImage, { width: 800 })
     : ''
 
   return (
     <Link
       to={`/essays/${essay.id}`}
-      className="essay-hero-card"
-      style={imgSrc ? { backgroundImage: `url(${imgSrc})` } : undefined}
+      className="essay-card"
+      ref={ref}
+      style={{ transitionDelay: `${index * 0.08}s` }}
     >
-      <div className="essay-hero-card__overlay" />
-      <div className="essay-hero-card__content">
-        {category && <p className="essay-hero-card__eyebrow">{category}</p>}
-        <h2 className="essay-hero-card__title">{title}</h2>
-        {excerpt && <p className="essay-hero-card__excerpt">{excerpt}</p>}
-        <p className="essay-hero-card__meta">
-          {formatDate(date)}
-          {date && <span className="essay-item__meta-dot">·</span>}
-          {mins} min read
-        </p>
-      </div>
-    </Link>
-  )
-}
-
-// ─── Article Card ─────────────────────────────────────────────────────────────
-
-function EssayCard({ essay }: { essay: EssayItem }) {
-  const title = extractText(essay.title)
-  const date = extractText(essay.publishDate as string)
-  const category = extractText(essay.category)
-  const mins = readTime(essay.article)
-  const excerpt = getExcerpt(essay.article, 300)
-  const imgSrc = essay.blogImage ? optimizeContentfulImageUrl(essay.blogImage, { width: 600 }) : ''
-
-  return (
-    <Link to={`/essays/${essay.id}`} className="essay-card">
-      <div className="essay-card__img-wrap">
-        {imgSrc
-          ? <img src={imgSrc} alt={essay.blogImageAlt || title} loading="lazy" decoding="async" width="600" height="400" className="essay-card__img" />
-          : <div className="essay-card__img-placeholder" />
-        }
-        {category && <span className="essay-card__badge">{category}</span>}
-      </div>
+      {/* Col 1 — rows 1-4 */}
+      {category
+        ? <span className="essay-card__category">{category}</span>
+        : <span />
+      }
+      <h3 className="essay-card__title">{title}</h3>
       <div className="essay-card__body">
-        <div>
-          <h3 className="essay-card__title">{title}</h3>
-          {excerpt && <p className="essay-card__excerpt">{excerpt}</p>}
-        </div>
-        <p className="essay-card__meta">
+        {excerpt && <p className="essay-card__excerpt">{excerpt}</p>}
+        <span className="essay-card__read-more">Read more →</span>
+      </div>
+
+      {/* Col 2 — meta spans rows 1-2, image starts at row 3 (excerpt level) */}
+      <div className="essay-card__right-meta">
+        {author && (
+          <div className="essay-card__author-row">
+            <span className="essay-card__avatar" aria-hidden="true">
+              {author.split(' ').map((w: string) => w[0]).slice(0, 2).join('').toUpperCase()}
+            </span>
+            <span className="essay-card__author">{author}</span>
+          </div>
+        )}
+        <span className="essay-card__date-time">
           {formatDate(date)}
           {date && <span className="essay-card__dot">·</span>}
           {mins} min read
-        </p>
+        </span>
       </div>
+      {imgSrc && (
+        <img
+          src={imgSrc}
+          alt={essay.blogImageAlt || title}
+          loading="lazy"
+          decoding="async"
+          className="essay-card__img"
+        />
+      )}
     </Link>
   )
 }
 
 // ─── Pagination ───────────────────────────────────────────────────────────────
 
-const PER_PAGE = 7
+const PER_PAGE = 8
 
 function Pagination({ page, total, onPage }: { page: number; total: number; onPage: (p: number) => void }) {
   if (total <= 1) return null
@@ -160,7 +171,6 @@ export default function EssaysPage() {
     })
   }, [])
 
-  // Reset to page 1 when search changes
   useEffect(() => { setPage(1) }, [query])
 
   const filtered = essays.filter((e) => {
@@ -173,9 +183,6 @@ export default function EssaysPage() {
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE)
   const pageSlice = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
-
-  const heroEssay = page === 1 && !query && pageSlice.length > 0 ? pageSlice[0] : null
-  const listEssays = heroEssay ? pageSlice.slice(1) : pageSlice
 
   const handlePage = (p: number) => {
     setPage(p)
@@ -192,22 +199,17 @@ export default function EssaysPage() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <header className="essays-hero">
-        <div className="container">
-          <p className="section__eyebrow section__eyebrow--light">WRITING</p>
-          <h1 className="essays-hero__title">
-            Thoughts
-            <br />
-            &amp; ideas.
-          </h1>
-          <p className="essays-hero__sub">Where I share what I'm learning and thinking about.</p>
+      {/* Page Header */}
+      <header className="essays-header">
+        <div className="essays-header__inner">
+          <h1 className="essays-header__title">Writing</h1>
+          <p className="essays-header__sub">Thoughts on engineering, systems, and the craft of software.</p>
         </div>
       </header>
 
       {/* Search */}
       <div className="essays-search-bar">
-        <div className="container">
+        <div className="essays-search-inner">
           <input
             className="essays-search"
             type="search"
@@ -223,7 +225,7 @@ export default function EssaysPage() {
 
       {/* Content */}
       <main className="essay-list">
-        <div className="essay-list-container">
+        <div className="essay-list-inner">
           {loading ? (
             <div className="essays-loading" />
           ) : filtered.length === 0 ? (
@@ -232,21 +234,9 @@ export default function EssaysPage() {
               <p>{query ? 'Try a different search.' : 'Check back soon.'}</p>
             </div>
           ) : (
-            <>
-              {heroEssay && <HeroCard essay={heroEssay} />}
-              {listEssays.length > 0 && (
-                <>
-                  {heroEssay && (
-                    <div className="essays-archive-divider">
-                      <span>More writing</span>
-                    </div>
-                  )}
-                  <div className="essays-cards-grid">
-                    {listEssays.map((e) => <EssayCard key={e.id} essay={e} />)}
-                  </div>
-                </>
-              )}
-            </>
+            <div className="essays-article-list">
+              {pageSlice.map((e, i) => <EssayCard key={e.id} essay={e} index={i} />)}
+            </div>
           )}
           {!loading && totalPages > 1 && (
             <Pagination page={page} total={totalPages} onPage={handlePage} />

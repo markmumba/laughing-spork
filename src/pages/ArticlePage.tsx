@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getEssayById, type EssayItem } from '../lib/contentful'
-import { optimizeContentfulImageUrl } from '../lib/contentful-image'
 import RichTextRenderer from '../lib/richtext'
 import './ArticlePage.css'
 import { usePageMeta } from '../lib/usePageMeta'
@@ -152,8 +151,7 @@ export default function ArticlePage() {
   const date = extractText(essay.publishDate as string)
   const category = extractText(essay.category)
   const mins = readTime(essay.article)
-  const imageUrl = essay.blogImage ? optimizeContentfulImageUrl(essay.blogImage, { width: 1600 }) : ''
-  const nugget = extractText(essay.nugget)
+const nugget = extractText(essay.nugget)
   const nuggetAuthor = extractText(essay.nuggetAuthor)
 
   return (
@@ -193,17 +191,7 @@ export default function ArticlePage() {
             </div>
           </header>
 
-          {/* ── Hero Image ─────────────────────────────── */}
-          {imageUrl && (
-            <div className="article-hero-wrap">
-              <figure className="article-hero-image">
-                <img src={imageUrl} alt={essay.blogImageAlt || title} loading="eager" decoding="async" width="1600" height="900" />
-              </figure>
-              {!!essay.blogImageOwner && (
-                <p className="article-hero-caption">{extractText(essay.blogImageOwner)}</p>
-              )}
-            </div>
-          )}
+          {/* Hero image removed — let writing lead */}
 
           {/* ── Body ───────────────────────────────────── */}
           <div className="article-body-wrap">
