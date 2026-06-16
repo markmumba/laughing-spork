@@ -1,6 +1,6 @@
 import { Suspense, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, type ThreeEvent } from '@react-three/fiber'
-import { ContactShadows, Environment, RoundedBox, Text } from '@react-three/drei'
+import { ContactShadows, RoundedBox, Text } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface KeyTheme {
@@ -32,53 +32,8 @@ const blackKey: KeyTheme = {
   textColor: '#f5f5f1',
 }
 
-const KEY_SOUND_SRC = '/sound.ogg'
-const KEY_SOUND_DURATION_MS = 1000
 const KEY_NAVIGATION_DELAY_MS = 1100
-let keySound: HTMLAudioElement | null = null
-let keySoundStopTimer = 0
 let keyNavigationTimer = 0
-
-function primeKeySound() {
-  if (typeof window === 'undefined') return null
-
-  if (!keySound) {
-    keySound = new Audio(KEY_SOUND_SRC)
-    keySound.preload = 'auto'
-    keySound.volume = 0.9
-    keySound.load()
-  }
-
-  return keySound
-}
-
-function stopKeySound() {
-  if (!keySound) return
-
-  keySound.pause()
-
-  try {
-    keySound.currentTime = 0
-  } catch {
-    // Some browsers reject seeking before metadata is ready.
-  }
-}
-
-function playKeySoundForOneSecond() {
-  if (typeof window === 'undefined') return
-
-  const sound = primeKeySound()
-  if (!sound) return
-
-  window.clearTimeout(keySoundStopTimer)
-  stopKeySound()
-
-  sound.play().catch(() => {
-    // Browsers can reject audio playback outside trusted user gestures.
-  })
-
-  keySoundStopTimer = window.setTimeout(stopKeySound, KEY_SOUND_DURATION_MS)
-}
 
 function random(seed: number) {
   let value = seed
@@ -228,7 +183,6 @@ function Keycap({ href, hrefs, position, texture, theme }: KeycapProps) {
     if (!canPress) return
 
     setPressed(true)
-    playKeySoundForOneSecond()
   }
 
   const handlePointerUp = (event: ThreeEvent<PointerEvent>) => {
@@ -247,7 +201,6 @@ function Keycap({ href, hrefs, position, texture, theme }: KeycapProps) {
 
     window.clearTimeout(keyNavigationTimer)
     keyNavigationTimer = window.setTimeout(() => {
-      stopKeySound()
       window.location.href = targetHref
     }, KEY_NAVIGATION_DELAY_MS)
   }
@@ -316,10 +269,7 @@ export default function DeveloperKeyScene({ href = '#projects', hrefs }: { href?
   const blackTexture = useMemo(() => createLineTexture(21, true), [])
 
   useLayoutEffect(() => {
-    primeKeySound()
-
     return () => {
-      window.clearTimeout(keySoundStopTimer)
       window.clearTimeout(keyNavigationTimer)
     }
   }, [])
@@ -332,10 +282,10 @@ export default function DeveloperKeyScene({ href = '#projects', hrefs }: { href?
       gl={{ antialias: true, alpha: true }}
     >
       <Suspense fallback={null}>
-        <ambientLight intensity={1.55} />
-        <directionalLight position={[2.8, 5, 3.2]} intensity={2.4} castShadow />
-        <directionalLight position={[-3, 2, -2]} intensity={0.72} />
-        <Environment preset="studio" />
+        <ambientLight intensity={2.2} />
+        <directionalLight position={[2.8, 5, 3.2]} intensity={2.8} castShadow />
+        <directionalLight position={[-3, 2, -2]} intensity={1.1} />
+        <directionalLight position={[0, -2, 2]} intensity={0.5} />
 
         <group rotation={[0.36, -0.12, 0]} position={[0, -0.06, 0]}>
           <Keycap position={[-1.95, 0, 0]} texture={whiteTexture} theme={{ ...whiteKey, text: 'de' }} href={href} hrefs={hrefs} />

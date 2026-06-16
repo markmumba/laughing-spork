@@ -11,7 +11,7 @@ const projects = [
     tags: ['Spring Boot', 'Next.js', 'M-Pesa', 'PostgreSQL'],
     github: 'https://github.com/markmumba/foliocuts-backend',
     demo: 'https://folio.blazor-movies.online/',
-    image: '/projects/foliocuts.png',
+    image: '/projects/foliocuts.webp',
   },
   {
     id: 2,

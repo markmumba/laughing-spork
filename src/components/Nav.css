@@ -54,6 +54,8 @@
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   transition: color 0.3s ease, opacity 0.2s ease;
+  padding: 10px 4px;
+  display: inline-block;
 }
 
 .nav--scrolled .nav__links a { color: #1d1d1f; }
@@ -73,7 +75,11 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 12px;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav__burger span {

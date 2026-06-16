@@ -28,9 +28,18 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
 
   useEffect(() => {
     if (phase !== 'output') return
-    const t = setTimeout(() => setPhase('ready'), 2000)
+    const t = setTimeout(() => setPhase('ready'), 900)
     return () => clearTimeout(t)
   }, [phase])
+
+  useEffect(() => {
+    if (phase !== 'ready') return
+    const t = setTimeout(() => {
+      setPhase('exiting')
+      setTimeout(onDone, 480)
+    }, 800)
+    return () => clearTimeout(t)
+  }, [phase, onDone])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
