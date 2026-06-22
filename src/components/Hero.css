@@ -140,23 +140,6 @@
   z-index: 0;
 }
 
-.hero__key-scene {
-  position: absolute;
-  right: clamp(-210px, -10vw, -88px);
-  bottom: clamp(-86px, -6vh, -42px);
-  z-index: 1;
-  width: clamp(760px, 74vw, 1260px);
-  height: clamp(360px, 50vh, 600px);
-  transform: none;
-  opacity: 0.9;
-}
-
-.hero__key-scene canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
 
 .hero__inner {
   max-width: 980px;
@@ -287,14 +270,6 @@
 }
 
 @media (max-width: 980px) {
-  .hero__key-scene {
-    right: -360px;
-    bottom: -70px;
-    width: 1080px;
-    height: 480px;
-    opacity: 0.58;
-  }
-
   .hero-sticker--3,
   .hero-sticker--4,
   .hero-sticker--6 {
@@ -303,14 +278,6 @@
 }
 
 @media (max-width: 734px) {
-  .hero__key-scene {
-    right: -500px;
-    bottom: -86px;
-    width: 1120px;
-    height: 470px;
-    opacity: 0.44;
-  }
-
   .hero-sticker {
     display: none;
   }

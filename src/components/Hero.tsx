@@ -1,7 +1,5 @@
-import { lazy, Suspense, useRef, useEffect, useState, type CSSProperties } from 'react'
+import { useRef, useEffect, useState, type CSSProperties } from 'react'
 import './Hero.css'
-
-const DeveloperKeyScene = lazy(() => import('./DeveloperKeyScene'))
 
 // ─── Scramble Text ────────────────────────────────────────────────────────────
 
@@ -256,7 +254,6 @@ function LanguageIcon({ icon }: { icon: StickerIcon }) {
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null)
-  const [blogHrefs, setBlogHrefs] = useState<string[]>(['/essays'])
 
   useEffect(() => {
     const hero = heroRef.current
@@ -335,34 +332,10 @@ export default function Hero() {
     }
   }, [])
 
-  useEffect(() => {
-    let cancelled = false
-
-    import('../lib/contentful')
-      .then(({ getEssays }) => getEssays())
-      .then((essays) => {
-        if (cancelled) return
-        const hrefs = essays.map((essay) => `/essays/${essay.id}`).filter(Boolean)
-        if (hrefs.length > 0) setBlogHrefs(hrefs)
-      })
-      .catch(() => {
-        if (!cancelled) setBlogHrefs(['/essays'])
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
   return (
     <section id="hero" className="hero" ref={heroRef}>
       <div className="hero__stars-a" aria-hidden="true" />
       <HeroMaze />
-      <div className="hero__key-scene" aria-label="3D keys spelling developer">
-        <Suspense fallback={null}>
-          <DeveloperKeyScene href="/essays" hrefs={blogHrefs} />
-        </Suspense>
-      </div>
       <div className="hero__stars-b" aria-hidden="true" />
 
       {STICKERS.map((sticker) => (
