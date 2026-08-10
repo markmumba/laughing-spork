@@ -198,6 +198,31 @@
   color: #34c759;
 }
 
+.share-btn--story {
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: #fff;
+  border-radius: 8px;
+}
+
+.share-btn--story:hover {
+  opacity: 0.85;
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: #fff;
+}
+
+.share-btn--generating {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.share-btn__spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .share-btn__label {
   font-size: 12px;
 }
