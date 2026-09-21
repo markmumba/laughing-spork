@@ -10,7 +10,7 @@ const projects = [
       'Digital barbershop management for Kenyan shops. Commission tracking, M-Pesa STK push, automated receipts, loyalty rewards, live analytics, staff dashboards. 3-minute onboarding.',
     tags: ['Spring Boot', 'Next.js', 'M-Pesa', 'PostgreSQL'],
     github: 'https://github.com/markmumba/foliocuts-backend',
-    demo: 'https://folio.blazor-movies.online/',
+    demo: 'https://foliocuts.markian.fit/',
     image: '/projects/foliocuts.webp',
   },
   {
