@@ -34,7 +34,7 @@ const experience = [
 const projects = [
   {
     name: 'RentItUp',
-    url: 'https://rentitup.blazor-movies.online/',
+    url: 'https://rentitup.markian.fit',
     tags: ['Spring Boot', 'Next.js', 'PostgreSQL', 'gRPC', 'OAuth2'],
     bullets: [
       'Designed and built a machinery rental marketplace across four independently deployable microservices supporting real-time availability, booking, and payment workflows.',

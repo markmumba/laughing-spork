@@ -32,7 +32,7 @@ const projects = [
       'Rental platform connecting machinery owners with users — from contractors to homeowners.',
     tags: ['Next.js', 'Spring Boot'],
     github: 'https://github.com/markmumba/rentitup-microservice',
-    demo: 'https://rentitup.blazor-movies.online/',
+    demo: 'https://rentitup.markian.fit',
     image: '/projects/rentitup.webp',
   },
   {
