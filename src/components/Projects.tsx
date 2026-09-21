@@ -37,14 +37,14 @@ const projects = [
   },
   {
     id: 4,
-    name: 'ESTC Website',
-    category: 'CORPORATE',
+    name: 'Agamemnon',
+    category: 'CINEMATIC',
     description:
-      'Website for a professional training organization offering Leadership, ICT, and HR programs.',
-    tags: ['Next.js', 'CMS'],
-    github: 'https://github.com/markmumba/estc',
-    demo: 'https://exceptionalskills.co.ke/',
-    image: '/projects/estc.webp',
+      'Cinematic tribute site for the High King of Mycenae. Immersive visual storytelling with dramatic typography and atmospheric design.',
+    tags: ['Next.js', 'CSS'],
+    github: 'https://github.com/markmumba/agamemnon',
+    demo: 'https://agamemnon.markian.fit',
+    image: '/projects/agamemnon.webp',
   },
   {
     id: 5,
