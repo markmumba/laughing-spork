@@ -11,36 +11,49 @@ export default function About() {
           <div className="about__left">
             <p className="section__eyebrow">ABOUT</p>
             <h2 className="section__headline">
-              Fascinated by how
+              Software Engineer
               <br />
-              systems think.
+              specializing in backend.
             </h2>
             <p className="about__body">
-              It started with a Samsung Note 5. Studying Computer Science — compiler
-              construction, distributed systems, concurrency — only deepened the obsession.
-              Today I build production systems at Cloudit and contribute to payment
-              microservices at Kyosk.
+              I build backend systems that are reliable, maintainable, and designed to scale—from
+              REST APIs and microservices to asynchronous workflows and cloud-native applications.
             </p>
             <p className="about__body">
-              I believe code is a craft. The goal isn't just working software — it's
-              software that communicates clearly to the next person who reads it.
+              My primary stack includes Java, Spring Boot, MongoDB, PostgreSQL, gRPC, Docker, and
+              cloud technologies, with hands-on experience building and deploying production systems
+              across fintech, e-commerce, HR systems, and workflow automation.
             </p>
-            <blockquote className="about__quote">
-              <p>
-                "The purpose of music is not the end of the composition — the whole point
-                of the dancing is the dance."
-              </p>
-              <cite>— Alan Watts</cite>
-            </blockquote>
+            <p className="about__body">
+              Beyond writing code, I am deeply interested in the engineering principles behind great
+              systems—studying distributed systems, data-intensive applications, system design, and
+              software architecture to continuously improve how I build software.
+            </p>
+            <p className="about__body">
+              I enjoy collaborating with teams that value technical excellence, ownership, and
+              building products that create meaningful impact.
+            </p>
           </div>
           <div ref={gridRef} className="about__right stagger-reveal">
             <div className="about__card">
-              <p className="about__card-label">CURRENT FOCUS</p>
+              <p className="about__card-label">FOCUS AREAS</p>
               <ul className="about__focus-list">
-                <li>Exploring distributed systems</li>
-                <li>Reading on system design principles</li>
-                <li>The psychology of debugging</li>
-                <li>How fintech works — RTGS, payment platforms, distributed settlement engines</li>
+                <li>Backend architecture and API design</li>
+                <li>Distributed systems and microservices</li>
+                <li>Database design and performance optimization</li>
+                <li>Event-driven systems and asynchronous processing</li>
+                <li>Cloud infrastructure and containerized deployments</li>
+                <li>Reliability, resilience, and scalable software design</li>
+              </ul>
+            </div>
+            <div className="about__card">
+              <p className="about__card-label">OPEN TO</p>
+              <ul className="about__focus-list">
+                <li>Backend Engineering</li>
+                <li>Software Engineering</li>
+                <li>Distributed Systems</li>
+                <li>Platform Engineering</li>
+                <li>Cloud &amp; Infrastructure Engineering</li>
               </ul>
             </div>
             <div className="about__card">
