@@ -5,7 +5,7 @@ export default function About() {
   const headerRef = useReveal()
   const gridRef = useReveal()
   return (
-    <section id="about" className="section section--white">
+    <section id="about" className="section section--gray about-section">
       <div className="container">
         <div ref={headerRef} className="reveal about__grid">
           <div className="about__left">

@@ -210,7 +210,7 @@ export default function ResumePage() {
       <footer className="footer">
         <div className="container">
           <div className="footer__inner">
-            <p className="footer__copy">© 2026 Markian Mumba. All rights reserved.</p>
+            <p className="footer__copy">© 2026 Markian Mumba Mwangi. All rights reserved.</p>
             <div className="footer__links">
               <Link to="/">Home</Link>
               <Link to="/essays">Writing</Link>

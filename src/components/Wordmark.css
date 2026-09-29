@@ -1,0 +1,34 @@
+.wordmark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: max-content;
+  max-width: 100%;
+  color: var(--ink-blue);
+  line-height: 1;
+}
+
+.wordmark__given {
+  font-family: var(--font-editorial);
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.wordmark__period { color: var(--accent-gold); }
+
+.wordmark__family {
+  margin: 3px 0 0 2px;
+  font-family: var(--font-editorial);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.wordmark--large .wordmark__given { font-size: 38px; }
+.wordmark--large .wordmark__family { margin-top: 5px; font-size: 15px; }

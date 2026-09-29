@@ -1,3 +1,4 @@
+import Wordmark from './Wordmark'
 import './Footer.css'
 
 export default function Footer() {
@@ -6,7 +7,7 @@ export default function Footer() {
       <div className="container">
         <div className="footer__inner">
           <div className="footer__brand">
-            <p className="footer__brand-name">Markian.</p>
+            <Wordmark size="large" />
             <p className="footer__brand-tag">Engineer · Learner · Philosopher</p>
           </div>
           <div className="footer__links">
@@ -17,7 +18,7 @@ export default function Footer() {
             <a href="/cv.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
           </div>
         </div>
-        <p className="footer__copy">© 2026 Markian Mumba. All rights reserved.</p>
+        <p className="footer__copy">© 2026 Markian Mumba Mwangi. All rights reserved.</p>
       </div>
     </footer>
   )

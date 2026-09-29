@@ -67,10 +67,10 @@ export default function Writing() {
   }
 
   return (
-    <section id="writing" className="section section--dark">
+    <section id="writing" className="section section--white writing-section">
       <div className="container">
         <div ref={ref} className="reveal">
-          <p className="section__eyebrow section__eyebrow--light">WRITING</p>
+          <p className="section__eyebrow">WRITING</p>
           <h2 className="section__headline">Thoughts &amp; ideas.</h2>
           <p className="section__sub">Where I share what I'm learning and thinking about.</p>
         </div>
@@ -90,10 +90,8 @@ export default function Writing() {
               <RouterLink
                 key={essay.id}
                 to={`/essays/${essay.id}`}
-                className="writing-card writing-card--bg"
-                style={imgSrc ? { backgroundImage: `url(${imgSrc})` } : undefined}
+                className="writing-card"
               >
-                <div className="writing-card__overlay" />
                 <div className="writing-card__text">
                   {(category || date) && (
                     <p className="writing-card__meta">
@@ -104,6 +102,11 @@ export default function Writing() {
                   {excerpt && <p className="writing-card__excerpt">{excerpt}</p>}
                   <span className="writing-card__cta">Read article ›</span>
                 </div>
+                {imgSrc && (
+                  <div className="writing-card__img">
+                    <img src={imgSrc} alt="" loading="lazy" decoding="async" />
+                  </div>
+                )}
               </RouterLink>
             )
           })}

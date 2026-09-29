@@ -13,13 +13,13 @@
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom-color: rgba(0, 0, 0, 0.1);
+  border-bottom-color: var(--rule-blue);
 }
 
 .nav__inner {
-  max-width: 980px;
+  max-width: 1340px;
   margin: 0 auto;
-  padding: 0 22px;
+  padding: 0 30px;
   height: 100%;
   display: flex;
   align-items: center;
@@ -27,16 +27,12 @@
 }
 
 .nav__logo {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: #fff;
+  display: inline-flex;
+  align-items: center;
   text-decoration: none;
-  transition: color 0.3s ease, opacity 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
-.nav--scrolled .nav__logo { color: #1d1d1f; }
 .nav__logo:hover { opacity: 0.65; }
 
 .nav__links {
@@ -51,14 +47,14 @@
   font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.8);
+  color: #173f91;
   text-decoration: none;
   transition: color 0.3s ease, opacity 0.2s ease;
   padding: 10px 4px;
   display: inline-block;
 }
 
-.nav--scrolled .nav__links a { color: #1d1d1f; }
+.nav--scrolled .nav__links a { color: var(--ink-blue); }
 .nav__links a:hover { opacity: 0.55; }
 
 .nav__github {
@@ -86,15 +82,16 @@
   display: block;
   width: 22px;
   height: 1.5px;
-  background: #fff;
+  background: #173f91;
   transition: background 0.3s ease, opacity 0.2s ease;
   border-radius: 2px;
 }
 
-.nav--scrolled .nav__burger span { background: #1d1d1f; }
+.nav--scrolled .nav__burger span { background: var(--ink-blue); }
 .nav__burger span.hidden { opacity: 0; }
 
 @media (max-width: 734px) {
+  .nav__inner { padding: 0 22px; }
   .nav__burger { display: flex; }
 
   .nav__links {
@@ -107,7 +104,7 @@
     gap: 0;
     background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 1px solid var(--rule-blue);
     padding: 8px 22px 16px;
     display: none;
   }
@@ -115,9 +112,9 @@
   .nav__links--open { display: flex; }
 
   .nav__links a {
-    color: #1d1d1f !important;
+    color: var(--ink-blue) !important;
     padding: 13px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    border-bottom: 1px solid var(--rule-blue);
     font-size: 16px;
   }
 

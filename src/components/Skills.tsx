@@ -49,7 +49,7 @@ const TRUNK_TICKS = (() => {
 
 const SKILL_BRANCHES: SkillBranch[] = [
   {
-    id: 'lang', label: 'LANGUAGES', color: '#60a5fa',
+    id: 'lang', label: 'LANGUAGES', color: '#173f91',
     forkX: 130, trackY: 82, up: true, trackEnd: 742,
     pathDelay: 0.65,
     nodes: [
@@ -60,7 +60,7 @@ const SKILL_BRANCHES: SkillBranch[] = [
     ],
   },
   {
-    id: 'backend', label: 'BACKEND', color: '#fbbf24',
+    id: 'backend', label: 'BACKEND', color: '#a77a29',
     forkX: 220, trackY: 378, up: false, trackEnd: 862,
     pathDelay: 2.25,
     nodes: [
@@ -71,7 +71,7 @@ const SKILL_BRANCHES: SkillBranch[] = [
     ],
   },
   {
-    id: 'frontend', label: 'FRONTEND', color: '#c084fc',
+    id: 'frontend', label: 'FRONTEND', color: '#537579',
     forkX: 370, trackY: 166, up: true, trackEnd: 830,
     pathDelay: 4.03,
     nodes: [
@@ -81,7 +81,7 @@ const SKILL_BRANCHES: SkillBranch[] = [
     ],
   },
   {
-    id: 'infra', label: 'INFRA', color: '#34d399',
+    id: 'infra', label: 'INFRA', color: '#6a7283',
     forkX: 500, trackY: 440, up: false, trackEnd: 964,
     pathDelay: 5.73,
     nodes: [
@@ -94,10 +94,10 @@ const SKILL_BRANCHES: SkillBranch[] = [
 
 function hexAlpha(hex: string, a: number): string {
   const m: Record<string, string> = {
-    '#60a5fa': `rgba(96,165,250,${a})`,
-    '#c084fc': `rgba(192,132,252,${a})`,
-    '#fbbf24': `rgba(251,191,36,${a})`,
-    '#34d399': `rgba(52,211,153,${a})`,
+    '#173f91': `rgba(23,63,145,${a})`,
+    '#a77a29': `rgba(167,122,41,${a})`,
+    '#537579': `rgba(83,117,121,${a})`,
+    '#6a7283': `rgba(106,114,131,${a})`,
   }
   return m[hex] ?? `rgba(255,255,255,${a})`
 }

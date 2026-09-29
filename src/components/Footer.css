@@ -1,34 +1,25 @@
 .footer {
-  background: #111113;
+  background: #fff;
   padding: 48px 22px 32px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--rule-blue);
 }
 
 .footer__inner {
-  max-width: 980px;
+  max-width: 1220px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding-bottom: 32px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--rule-blue);
   margin-bottom: 24px;
-}
-
-.footer__brand-name {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 6px;
-  letter-spacing: -0.02em;
 }
 
 .footer__brand-tag {
   font-family: var(--font-body);
   font-size: 12px;
-  color: rgba(255,255,255,0.3);
-  margin: 0;
+  color: var(--ink-muted);
+  margin: 12px 0 0;
   letter-spacing: 0.02em;
 }
 
@@ -43,19 +34,19 @@
 .footer__links a {
   font-family: var(--font-body);
   font-size: 13px;
-  color: rgba(255,255,255,0.35);
+  color: var(--ink-blue);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.footer__links a:hover { color: rgba(255,255,255,0.7); }
+.footer__links a:hover { opacity: 0.6; }
 
 .footer__copy {
   font-family: var(--font-body);
   font-size: 12px;
-  color: rgba(255,255,255,0.2);
+  color: var(--ink-muted);
   margin: 0;
-  max-width: 980px;
+  max-width: 1220px;
   margin-inline: auto;
 }
 

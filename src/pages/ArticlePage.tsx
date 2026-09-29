@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getEssayById, type EssayItem } from '../lib/contentful'
 import RichTextRenderer from '../lib/richtext'
+import Wordmark from '../components/Wordmark'
 import './ArticlePage.css'
 import { usePageMeta } from '../lib/usePageMeta'
 import type { Document } from '@contentful/rich-text-types'
@@ -384,7 +385,7 @@ const nugget = extractText(essay.nugget)
       <footer className="footer">
         <div className="container">
           <div className="footer__inner">
-            <p className="footer__copy">© 2026 Markian Mumba. All rights reserved.</p>
+            <p className="footer__copy">© 2026 Markian Mumba Mwangi. All rights reserved.</p>
             <div className="footer__links">
               <Link to="/">Home</Link>
               <a href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -415,7 +416,7 @@ function ArticleNav({ title }: { title: string }) {
         {scrolled && title ? (
           <span className="article-nav__scrolled-title">{title}</span>
         ) : (
-          <Link to="/" className="article-nav__home">Markian.</Link>
+          <Link to="/" className="article-nav__home"><Wordmark /></Link>
         )}
       </div>
     </nav>

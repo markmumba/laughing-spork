@@ -8,11 +8,10 @@
 .contact__text { flex: 1; }
 
 .contact__headline {
-  font-family: var(--font-display);
-  font-size: clamp(44px, 7vw, 80px);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
+  font-family: var(--font-editorial);
+  font-size: 5rem;
+  font-weight: 400;
+  line-height: 0.98;
   color: #fff;
   margin: 0 0 28px;
 }
@@ -21,7 +20,7 @@
   font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.65;
-  color: rgba(255,255,255,0.42);
+  color: rgba(255,255,255,0.78);
   margin: 0 0 40px;
   font-weight: 300;
 }
@@ -35,7 +34,7 @@
 .contact__links a {
   font-family: var(--font-body);
   font-size: 14px;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.8);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -43,7 +42,7 @@
 .contact__links a:hover { color: rgba(255,255,255,0.85); }
 
 .contact__links span {
-  color: rgba(255,255,255,0.18);
+  color: var(--accent-gold);
   font-size: 12px;
 }
 
@@ -96,7 +95,7 @@
   top: 50%;
   transform: translateX(-50%) translateY(-48%);
   background: #fff;
-  border-radius: 8px;
+  border-radius: 2px;
   border: 1px solid #e0e0e4;
   padding: 22px 28px 24px;
   display: flex;
@@ -125,7 +124,7 @@
   display: block;
   width: 28px;
   height: 2px;
-  background: #000;
+  background: var(--accent-gold);
   border-radius: 1px;
   margin-bottom: 4px;
 }
@@ -140,10 +139,10 @@
 }
 
 .env-letter__email {
-  font-family: var(--font-display);
+  font-family: var(--font-editorial);
   font-size: clamp(15px, 1.6vw, 19px);
   font-weight: 700;
-  color: #000;
+  color: var(--ink-blue);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
@@ -151,7 +150,7 @@
 .env-letter__cta {
   font-family: var(--font-body);
   font-size: 13px;
-  color: #0066cc;
+  color: var(--ink-blue);
   margin-top: 2px;
 }
 
@@ -162,8 +161,12 @@
   .contact__links   { justify-content: center; }
 }
 
+@media (max-width: 734px) {
+  .contact__headline { font-size: 3.5rem; }
+}
+
 @media (max-width: 480px) {
-  .contact__env     { width: 320px; height: 208px; }
+  .contact__env     { width: min(320px, 100%); height: auto; aspect-ratio: 400 / 260; }
   .env-letter       { width: 268px; padding: 18px 20px 20px; }
   .env-letter__email { font-size: 15px; }
 }

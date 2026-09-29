@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
+import Wordmark from './Wordmark'
 import './Nav.css'
 
 export default function Nav() {
@@ -18,7 +19,7 @@ export default function Nav() {
     <nav className={`nav${scrolled ? ' nav--scrolled' : ''}`}>
       <div className="nav__inner">
         <a href="#hero" className="nav__logo">
-          Markian.
+          <Wordmark />
         </a>
         <ul className={`nav__links${menuOpen ? ' nav__links--open' : ''}`}>
           <li>

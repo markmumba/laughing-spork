@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import CustomCursor from './components/CustomCursor'
 import './App.css'
 
 const HomePage   = lazy(() => import('./pages/HomePage'))
@@ -10,6 +11,7 @@ const ResumePage  = lazy(() => import('./pages/ResumePage'))
 function App() {
   return (
     <BrowserRouter>
+      <CustomCursor />
       <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
         <Routes>
           <Route path="/"           element={<HomePage />} />

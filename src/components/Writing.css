@@ -1,185 +1,124 @@
-/* ── Carousel ── */
-.writing-carousel-wrap {
-  margin-top: 48px;
-}
+.writing-carousel-wrap { margin-top: 48px; }
 
 .writing-carousel {
   display: flex;
-  gap: 24px;
+  gap: 28px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding: 8px max(22px, calc((100vw - 980px) / 2)) 16px;
+  padding: 0 max(30px, calc((100vw - 1220px) / 2)) 16px;
 }
 
 .writing-carousel::-webkit-scrollbar { display: none; }
 
 .writing-card {
-  flex: 0 0 min(820px, 82vw);
+  flex: 0 0 min(900px, 82vw);
+  min-height: 360px;
   scroll-snap-align: start;
   display: flex;
-  align-items: stretch;
-  background: #fff;
-  border-radius: 20px;
-  overflow: hidden;
-  min-height: 380px;
-  text-decoration: none;
   color: inherit;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-  transition: transform 0.3s var(--ease-standard), box-shadow 0.3s var(--ease-standard);
+  text-decoration: none;
+  border-top: 1px solid var(--rule-blue);
+  border-bottom: 1px solid var(--rule-blue);
+  transition: border-color 180ms ease;
 }
 
-.writing-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.13);
-}
+.writing-card:hover { border-color: var(--ink-blue); }
 
 .writing-card__text {
   flex: 1;
-  padding: 44px 48px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  padding: 30px 34px 30px 0;
 }
 
 .writing-card__meta {
   font-family: var(--font-body);
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--ink-muted);
   text-transform: uppercase;
-  color: #aeaeb2;
-  margin: 0 0 14px;
+  margin-bottom: 22px;
 }
 
 .writing-card__title {
-  font-family: var(--font-display);
-  font-size: clamp(20px, 2.4vw, 28px);
-  font-weight: 700;
-  color: #1d1d1f;
-  line-height: 1.22;
-  letter-spacing: -0.022em;
-  margin: 0 0 18px;
+  font-family: var(--font-editorial);
+  font-size: 2.2rem;
+  font-weight: 400;
+  line-height: 1.12;
+  color: var(--ink-blue);
+  margin-bottom: 18px;
 }
 
 .writing-card__excerpt {
   font-family: var(--font-body);
   font-size: 15px;
-  line-height: 1.72;
-  color: #6e6e73;
-  font-weight: 300;
-  margin: 0 0 32px;
-  flex: 1;
+  line-height: 1.65;
+  color: #39465a;
+  margin-bottom: 28px;
+  max-width: 52ch;
 }
 
 .writing-card__cta {
   font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  color: #0066cc;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ink-blue);
   margin-top: auto;
 }
 
 .writing-card__img {
-  width: 300px;
-  flex-shrink: 0;
-  overflow: hidden;
+  flex: 0 0 43%;
+  min-width: 0;
+  padding: 20px 0;
 }
 
 .writing-card__img img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
-/* ── Background image variant ── */
-.writing-card--bg {
-  position: relative;
-  background-size: cover;
-  background-position: center;
-}
-
-.writing-card__overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0,0,0,0.82) 0%,
-    rgba(0,0,0,0.45) 50%,
-    rgba(0,0,0,0.15) 100%
-  );
-  border-radius: inherit;
-}
-
-.writing-card--bg .writing-card__text {
-  position: relative;
-  z-index: 1;
-  justify-content: flex-end;
-}
-
-.writing-card--bg .writing-card__meta { color: rgba(255,255,255,0.6); }
-
-.writing-card--bg .writing-card__title { color: #fff; }
-
-.writing-card--bg .writing-card__excerpt { color: rgba(255,255,255,0.75); }
-
-.writing-card--bg .writing-card__cta { color: rgba(255,255,255,0.9); }
-
-/* Dots */
 .writing-carousel__dots {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   margin-top: 28px;
 }
 
 .carousel-dot {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
-  background: #d1d1d6;
-  border: none;
-  cursor: pointer;
   padding: 0;
-  transition: width 0.3s var(--ease-standard), border-radius 0.3s var(--ease-standard), background 0.3s var(--ease-standard);
+  border: 1px solid var(--ink-blue);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
 }
 
-.carousel-dot--active {
-  width: 24px;
-  border-radius: 4px;
-  background: #1d1d1f;
-}
-
-.writing-carousel__footer {
-  margin-top: 36px;
-}
-
-@media (max-width: 734px) {
-  .writing-card {
-    flex: 0 0 88vw;
-    flex-direction: column;
-    min-height: unset;
-  }
-  .writing-card__img {
-    width: 100%;
-    height: 180px;
-    order: -1;
-  }
-  .writing-card__text {
-    padding: 28px 24px 32px;
-  }
-}
+.carousel-dot--active { background: var(--accent-gold); border-color: var(--accent-gold); }
+.writing-carousel__footer { margin-top: 36px; }
 
 .cta-link {
   font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 500;
-  color: #0066cc;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ink-blue);
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 180ms ease;
 }
 
-.cta-link:hover { opacity: 0.65; }
+.cta-link:hover { opacity: 0.6; }
+
+@media (max-width: 734px) {
+  .writing-carousel { padding-inline: 22px; gap: 20px; }
+  .writing-card { flex: 0 0 88vw; flex-direction: column-reverse; min-height: 0; }
+  .writing-card__img { flex: none; height: 190px; padding: 14px 0 0; }
+  .writing-card__text { padding: 22px 0 26px; }
+  .writing-card__title { font-size: 1.75rem; }
+}

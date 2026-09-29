@@ -6,7 +6,7 @@ interface PageMeta {
   image?: string
 }
 
-const BASE_TITLE = 'Markian Mumba — Engineer, Learner, Philosopher'
+const BASE_TITLE = 'Markian Mumba Mwangi — Engineer, Learner, Philosopher'
 const BASE_DESC = 'Fullstack Developer building distributed systems and clean abstractions in Nairobi, Kenya.'
 
 function setMeta(selector: string, attr: string, value: string) {
@@ -22,7 +22,7 @@ function setMeta(selector: string, attr: string, value: string) {
 
 export function usePageMeta({ title, description, image }: PageMeta) {
   useEffect(() => {
-    const fullTitle = title === BASE_TITLE ? title : `${title} — Markian Mumba`
+    const fullTitle = title === BASE_TITLE ? title : `${title} — Markian Mumba Mwangi`
     const desc = description ?? BASE_DESC
 
     document.title = fullTitle

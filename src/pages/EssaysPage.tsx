@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { getEssays, type EssayItem } from '../lib/contentful'
 import { optimizeContentfulImageUrl } from '../lib/contentful-image'
 import { usePageMeta } from '../lib/usePageMeta'
+import Footer from '../components/Footer'
+import Wordmark from '../components/Wordmark'
 import './EssaysPage.css'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -90,7 +92,8 @@ function EssayCard({ essay, index }: { essay: EssayItem; index: number }) {
       to={`/essays/${essay.id}`}
       className="essay-card"
       ref={ref}
-      style={{ transitionDelay: `${index * 0.08}s` }}
+      style={{ transitionDelay: `${index * 0.08}s`, zIndex: index + 1 }}
+      data-cursor="READ"
     >
       {/* Col 1 — rows 1-4 */}
       {category
@@ -171,8 +174,6 @@ export default function EssaysPage() {
     })
   }, [])
 
-  useEffect(() => { setPage(1) }, [query])
-
   const filtered = essays.filter((e) => {
     if (!query) return true
     const title = extractText(e.title).toLowerCase()
@@ -194,7 +195,7 @@ export default function EssaysPage() {
       {/* Nav */}
       <nav className="essays-nav">
         <div className="essays-nav__inner">
-          <Link to="/" className="essays-nav__logo">Markian.</Link>
+          <Link to="/" className="essays-nav__logo"><Wordmark /></Link>
           <Link to="/" className="essays-nav__back">← Home</Link>
         </div>
       </nav>
@@ -218,7 +219,10 @@ export default function EssaysPage() {
             autoComplete="off"
             placeholder="Search articles…"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setPage(1)
+            }}
           />
         </div>
       </div>
@@ -244,19 +248,7 @@ export default function EssaysPage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer__inner">
-            <p className="footer__copy">© 2026 Markian Mumba. All rights reserved.</p>
-            <div className="footer__links">
-              <Link to="/">Home</Link>
-              <a href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a href="mailto:mumbamarkian@gmail.com">Email</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
