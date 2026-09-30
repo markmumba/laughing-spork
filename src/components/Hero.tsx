@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import Monitor3D from './Monitor3D'
 import './Hero.css'
 
 export default function Hero() {
@@ -28,7 +27,7 @@ export default function Hero() {
             Systems <span aria-hidden="true">↗</span>
           </Link>
 
-          <Monitor3D />
+          <img className="hero__object" src="/retro-monitor-cutout.png" alt="Vintage cream CRT monitor" />
 
           <a href="#projects" className="hero__discipline hero__discipline--right">
             <span className="hero__discipline-index">02 /</span>

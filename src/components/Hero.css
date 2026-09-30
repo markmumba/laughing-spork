@@ -81,44 +81,10 @@
   justify-self: center;
   width: min(100%, 610px);
   aspect-ratio: 1.5;
+  object-fit: contain;
   transform: translateY(-62px);
   position: relative;
   z-index: 2;
-}
-
-.hero__object-fallback {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.hero__object--ready .hero__object-fallback { visibility: hidden; }
-
-.hero__canvas {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  touch-action: none;
-  cursor: grab;
-}
-
-.hero__canvas--dragging { cursor: grabbing; }
-
-.hero__reset {
-  position: absolute;
-  right: 7%;
-  bottom: 1%;
-  z-index: 1;
-  padding: 5px 0;
-  border: 0;
-  border-bottom: 1px solid var(--rule-blue);
-  background: transparent;
-  color: var(--ink-blue);
-  font: 500 10px/1.3 var(--font-mono);
-  cursor: pointer;
 }
 
 .hero__discipline {
