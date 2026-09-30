@@ -3,14 +3,6 @@
   box-sizing: border-box;
 }
 
-:root {
-  --font-display: 'Sora', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --ease-enter: cubic-bezier(0.0, 0.0, 0.2, 1.0);
-  --ease-exit: cubic-bezier(0.4, 0.0, 1.0, 1.0);
-  --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1.0);
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -20,7 +12,7 @@ body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #000;
+  background: #fff;
   color: #1d1d1f;
   overflow-x: hidden;
 }

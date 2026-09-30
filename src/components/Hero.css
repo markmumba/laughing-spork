@@ -21,7 +21,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 24px;
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
@@ -41,7 +41,7 @@
 .hero__title {
   display: flex;
   flex-direction: column;
-  font-family: 'Iowan Old Style', 'Baskerville', 'Times New Roman', serif;
+  font-family: var(--font-editorial);
   font-size: 8rem;
   font-weight: 400;
   line-height: 0.83;
@@ -60,7 +60,7 @@
   left: 9%;
   bottom: 8px;
   width: 205px;
-  font-family: 'Iowan Old Style', 'Baskerville', 'Times New Roman', serif;
+  font-family: var(--font-editorial);
   font-size: 15px;
   line-height: 1.27;
   color: #395990;
@@ -102,7 +102,7 @@
   gap: 8px;
   min-width: 0;
   color: #173f91;
-  font-family: 'Iowan Old Style', 'Baskerville', 'Times New Roman', serif;
+  font-family: var(--font-editorial);
   font-size: 28px;
   text-decoration: none;
   white-space: nowrap;
@@ -117,7 +117,7 @@
 .hero__discipline--right { justify-self: start; }
 
 .hero__discipline-index {
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
 }

@@ -1,20 +1,15 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './Preloader.css'
 
 const PRELOADER_CMD = 'create-portfolio'
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 export default function Preloader({ onDone }: { onDone: () => void }) {
-  const [cmdChars, setCmdChars] = useState(0)
-  const [phase, setPhase] = useState<'typing' | 'output' | 'ready' | 'exiting'>('typing')
-  const phaseRef = useRef(phase)
-  phaseRef.current = phase
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setCmdChars(PRELOADER_CMD.length)
-      setPhase('ready')
-    }
-  }, [])
+  const [cmdChars, setCmdChars] = useState(() => prefersReducedMotion() ? PRELOADER_CMD.length : 0)
+  const [phase, setPhase] = useState<'typing' | 'output' | 'ready' | 'exiting'>(() =>
+    prefersReducedMotion() ? 'ready' : 'typing'
+  )
 
   useEffect(() => {
     if (phase !== 'typing') return
@@ -34,28 +29,28 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
 
   useEffect(() => {
     if (phase !== 'ready') return
-    const t = setTimeout(() => {
-      setPhase('exiting')
-      setTimeout(onDone, 480)
-    }, 800)
+    const t = setTimeout(() => setPhase('exiting'), 800)
+    return () => clearTimeout(t)
+  }, [phase])
+
+  useEffect(() => {
+    if (phase !== 'exiting') return
+    const t = setTimeout(onDone, 480)
     return () => clearTimeout(t)
   }, [phase, onDone])
 
   useEffect(() => {
+    if (phase !== 'ready') return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && phaseRef.current === 'ready') {
-        setPhase('exiting')
-        setTimeout(onDone, 480)
-      }
+      if (e.key === 'Enter') setPhase('exiting')
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [onDone])
+  }, [phase])
 
   const handleClick = () => {
     if (phase !== 'ready') return
     setPhase('exiting')
-    setTimeout(onDone, 480)
   }
 
   return (

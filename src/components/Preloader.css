@@ -54,7 +54,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   color: rgba(255,255,255,0.55);
   pointer-events: none;
@@ -68,7 +68,7 @@
 }
 
 .preloader__prompt-line {
-  font-family: 'Menlo', 'Monaco', 'SF Mono', 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: clamp(13px, 2vw, 14px);
   line-height: 1;
   margin-bottom: 14px;
@@ -95,7 +95,7 @@
 }
 
 .preloader__output-wrap {
-  font-family: 'Menlo', 'Monaco', 'SF Mono', 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: clamp(12px, 1.8vw, 13px);
   line-height: 2;
   margin-bottom: 14px;
@@ -120,7 +120,7 @@
 }
 
 .preloader__enter {
-  font-family: 'Menlo', 'Monaco', 'SF Mono', 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: clamp(11px, 1.7vw, 12px);
   color: rgba(255,255,255,0.38);
   margin: 4px 0 0 0;

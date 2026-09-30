@@ -267,9 +267,9 @@ function ShareBar({ title, author, category, blogImage }: ShareBarProps) {
 
 export default function ArticlePage() {
   const { id } = useParams<{ id: string }>()
-  const [essay, setEssay] = useState<EssayItem | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [notFound, setNotFound] = useState(false)
+  const [result, setResult] = useState<{ id: string; essay: EssayItem | null } | null>(null)
+  const essay = result?.id === id ? result?.essay ?? null : null
+  const loading = Boolean(id) && result?.id !== id
 
   const metaTitle = essay ? extractText(essay.title) : 'Article'
   const metaDesc = essay ? richTextToPlain(essay.article).slice(0, 160).trimEnd() : undefined
@@ -278,12 +278,11 @@ export default function ArticlePage() {
   useEffect(() => {
     if (!id) return
     window.scrollTo(0, 0)
-    setLoading(true)
+    let cancelled = false
     getEssayById(id).then((data) => {
-      if (!data) setNotFound(true)
-      else setEssay(data)
-      setLoading(false)
+      if (!cancelled) setResult({ id, essay: data })
     })
+    return () => { cancelled = true }
   }, [id])
 
   if (loading) {
@@ -297,7 +296,7 @@ export default function ArticlePage() {
     )
   }
 
-  if (notFound || !essay) {
+  if (!essay) {
     return (
       <div className="article-page">
         <ArticleNav title="" />

@@ -85,7 +85,7 @@
 }
 
 .article-header__category {
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -102,7 +102,7 @@
 }
 
 .article-header__date {
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-size: 13px;
   color: var(--article-muted);
   font-weight: 400;
@@ -381,7 +381,7 @@
 .article-body em { font-style: italic; }
 
 .article-body code {
-  font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-family: var(--font-mono);
   font-size: 0.875em;
   background: var(--article-tint);
   color: var(--ink-blue);
@@ -422,7 +422,7 @@
 }
 
 .code-block-wrapper code {
-  font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-family: var(--font-mono);
   background: none;
   color: #edf3ff;
   padding: 0;

@@ -1,270 +1,194 @@
 .skills-section {
-  background: #fff;
-  padding-bottom: 80px;
   overflow: hidden;
+  background: #fff;
+  padding-bottom: 96px;
 }
 
-.skills-section .section__headline { color: var(--ink-blue); }
-.skills-section .section__eyebrow--light { color: var(--ink-blue); }
-
-/* ── Wrapper ── */
-.skill-tree-wrap {
-  margin-top: 52px;
-  width: 100%;
+.skills-section .section__headline {
+  margin-bottom: 0;
 }
 
-/* ── SVG ── */
-.skill-tree-svg {
-  display: block;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  overflow: visible;
+.technology-exhibit {
+  position: relative;
+  margin-top: 32px;
+  border-top: 1px solid var(--rule-blue);
 }
 
-/* ── Ghost trunk (faint full line, shows on enter) ── */
-.st-trunk-ghost {
-  stroke: rgba(23,63,145,0.12);
-  stroke-width: 2.5;
-  fill: none;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-.skill-tree--visible .st-trunk-ghost {
-  opacity: 1;
-}
-
-/* ── Shooting-star head on trunk ── */
-.st-trunk-head {
-  stroke: var(--accent-gold);
-  stroke-width: 3.5;
-  fill: none;
-  stroke-dasharray: var(--head-frac) var(--gap-frac);
-  stroke-dashoffset: 0;
-  opacity: 0;
-  filter: none;
-}
-.skill-tree--visible .st-trunk-head {
-  animation-name: st-head-travel;
-  animation-timing-function: ease-out;
-  animation-fill-mode: forwards;
-  animation-duration: var(--st-dur, 0.5s);
-  animation-delay: var(--st-delay, 0s);
-}
-
-/* ── Trunk segments (sequential) ── */
-.st-trunk-seg {
-  stroke: rgba(23,63,145,0.48);
-  stroke-width: 2.5;
-  fill: none;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  filter: none;
-}
-
-.skill-tree--visible .st-trunk-seg {
-  animation-name: st-draw;
-  animation-timing-function: ease-out;
-  animation-fill-mode: forwards;
-  animation-duration: var(--st-dur, 0.5s);
-  animation-delay: var(--st-delay, 0s);
-}
-
-/* ── Origin dot ── */
-.st-origin {
-  fill: var(--ink-blue);
-  opacity: 0;
-  filter: none;
-}
-
-.skill-tree--visible .st-origin {
-  animation: st-fade 0.4s ease forwards 0.3s;
-}
-
-/* ── Trunk tick marks ── */
-.st-tick {
-  stroke: rgba(23,63,145,0.25);
-  stroke-width: 1;
-  opacity: 0;
-}
-
-.st-tick--major {
-  stroke: rgba(23,63,145,0.55);
-  stroke-width: 1.5;
-  filter: none;
-}
-
-.skill-tree--visible .st-tick {
-  animation: st-fade 0.12s ease forwards;
-}
-
-/* ── Ghost branch paths (faint full shape, shows on enter) ── */
-.st-branch-ghost {
-  stroke: var(--branch-color);
-  stroke-width: 2;
-  fill: none;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-.skill-tree--visible .st-branch-ghost {
-  opacity: 0.12;
-}
-
-/* ── Shooting-star head on branches ── */
-.st-branch-head {
-  stroke: var(--branch-color);
-  stroke-width: 3;
-  fill: none;
-  stroke-dasharray: var(--head-frac) var(--gap-frac);
-  stroke-dashoffset: 0;
-  opacity: 0;
-  filter: none;
-}
-.skill-tree--visible .st-branch-head {
-  animation-name: st-head-travel;
-  animation-timing-function: ease-out;
-  animation-fill-mode: forwards;
-  animation-duration: var(--st-dur, 0.8s);
-  animation-delay: var(--st-delay, 0s);
-}
-
-/* ── Combined branch path (connector + rounded corner + track) ── */
-.st-branch-path {
-  stroke: var(--branch-color);
-  stroke-width: 2;
-  fill: none;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  opacity: 0.7;
-  filter: none;
-}
-
-.skill-tree--visible .st-branch-path {
-  animation: st-draw 1.30s ease-out forwards;
-}
-
-/* ── Branch label (floats on outer edge of track) ── */
-.st-branch-label {
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.09em;
-  opacity: 0;
-}
-
-.skill-tree--visible .st-branch-label {
-  animation: st-fade 0.4s ease forwards;
-}
-
-/* ── Fork dot ── */
-.st-fork-dot {
-  fill: var(--branch-color);
-  opacity: 0;
-  filter: none;
-}
-
-.skill-tree--visible .st-fork-dot {
-  animation: st-fade 0.3s ease forwards;
-}
-
-/* ── Node ── */
-.st-node {
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.skill-tree--visible .st-node {
-  animation: st-node-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-.st-node__dot {
-  fill: var(--branch-color);
-  filter: none;
-}
-
-.st-node__label {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  fill: #39465a;
+.technology-exhibit__masthead {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  right: 0;
+  color: var(--ink-blue);
+  font: 400 clamp(58px, 9.5vw, 144px)/0.9 var(--font-editorial);
+  white-space: nowrap;
+  text-align: center;
   pointer-events: none;
-  letter-spacing: 0.01em;
 }
 
-/* ── Keyframes ── */
-@keyframes st-draw {
-  from { stroke-dashoffset: 1; }
-  to   { stroke-dashoffset: 0; }
-}
-
-@keyframes st-fade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes st-node-in {
-  from { opacity: 0; transform: scale(0.3); }
-  to   { opacity: 1; transform: scale(1);   }
-}
-
-@keyframes st-head-travel {
-  0%   { opacity: 1;   stroke-dashoffset: 0; }
-  82%  { opacity: 1; }
-  100% { opacity: 0;   stroke-dashoffset: calc(-1 * var(--gap-frac)); }
-}
-
-/* ── Reduced motion ── */
-@media (prefers-reduced-motion: reduce) {
-  .skill-tree--visible .st-trunk-seg,
-  .skill-tree--visible .st-branch-path {
-    animation: none;
-    stroke-dashoffset: 0;
-  }
-  .skill-tree--visible .st-origin,
-  .skill-tree--visible .st-fork-dot,
-  .skill-tree--visible .st-tick,
-  .skill-tree--visible .st-branch-label,
-  .skill-tree--visible .st-node {
-    animation: none;
-    opacity: 1;
-  }
-}
-
-/* ── Mobile fallback ── */
-.skill-tree-fallback {
-  display: none;
-  flex-direction: column;
-  gap: 20px;
-  padding: 0 24px;
-}
-
-.st-fb-label {
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  margin: 0 0 8px;
-}
-
-.st-fb-pills {
+.technology-exhibit__covers {
+  position: relative;
+  z-index: 1;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  min-height: 492px;
+  padding: 106px 28px 52px;
+}
+
+.tech-cover {
+  --paper: #f8f9fb;
+  --cover-ink: #173f91;
+  --angle: -8deg;
+  --offset: 18px;
+  position: relative;
+  display: flex;
+  flex: 0 0 clamp(205px, 21vw, 254px);
+  flex-direction: column;
+  width: clamp(205px, 21vw, 254px);
+  height: 342px;
+  padding: 18px 19px 16px;
+  border: 1px solid rgba(23, 63, 145, 0.15);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--cover-ink);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 18px 26px rgba(26, 39, 62, 0.14), 2px 3px 0 rgba(23, 63, 145, 0.08);
+  transform: translateY(var(--offset)) rotate(var(--angle));
+  transform-origin: center 75%;
+  transition: transform 300ms var(--ease-enter), box-shadow 300ms ease;
+}
+
+.tech-cover + .tech-cover { margin-left: -27px; }
+.tech-cover:hover,
+.tech-cover:focus-visible,
+.tech-cover--active {
+  z-index: 5;
+  transform: translateY(-18px) rotate(0deg);
+  box-shadow: 0 28px 45px rgba(26, 39, 62, 0.2), 2px 4px 0 rgba(23, 63, 145, 0.08);
+}
+
+.tech-cover:active { transform: translateY(-10px) rotate(0deg); }
+
+.tech-cover--languages { z-index: 1; }
+.tech-cover--backend {
+  --paper: #244c91;
+  --cover-ink: #fff;
+  --angle: 5deg;
+  --offset: -15px;
+  z-index: 2;
+}
+.tech-cover--frontend {
+  --paper: #dce8ec;
+  --cover-ink: #173f65;
+  --angle: -6deg;
+  --offset: 15px;
+  z-index: 3;
+}
+.tech-cover--infrastructure {
+  --paper: #dfd2a9;
+  --cover-ink: #283c47;
+  --angle: 7deg;
+  --offset: 4px;
+  z-index: 4;
+}
+
+.tech-cover__header,
+.tech-cover__footer {
+  display: flex;
+  justify-content: space-between;
   gap: 8px;
+  font: 500 9px/1.3 var(--font-mono);
 }
 
-.st-fb-pill {
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 7px 16px;
-  border-radius: 2px;
-  border: 1px solid;
-  cursor: default;
-  user-select: none;
+.tech-cover__header {
+  padding-bottom: 12px;
+  border-bottom: 1px solid currentColor;
 }
 
-@media (max-width: 640px) {
-  .skill-tree-svg      { display: none; }
-  .skill-tree-fallback { display: flex; }
+.tech-cover__title {
+  display: block;
+  margin-top: 24px;
+  font: 400 clamp(34px, 3.2vw, 45px)/0.96 var(--font-editorial);
+  overflow-wrap: break-word;
+}
+
+.tech-cover__technologies {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: auto;
+  padding: 22px 0 18px;
+  font: 400 11px/1.35 var(--font-mono);
+}
+
+.tech-cover__technologies span::before {
+  content: '/ ';
+  opacity: 0.65;
+}
+
+.tech-cover__footer {
+  padding-top: 11px;
+  border-top: 1px solid currentColor;
+}
+
+.technology-exhibit__caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-blue);
+  color: var(--ink-blue);
+  font: 500 10px/1.4 var(--font-mono);
+  text-transform: uppercase;
+}
+
+@media (max-width: 800px) {
+  .technology-exhibit__masthead { font-size: clamp(48px, 10vw, 88px); }
+  .technology-exhibit__covers { min-height: 410px; padding-inline: 0; }
+  .tech-cover { flex-basis: 23%; width: 23%; height: 300px; padding: 14px; }
+  .tech-cover + .tech-cover { margin-left: -12px; }
+  .tech-cover__header,
+  .tech-cover__footer { font-size: 7px; }
+  .tech-cover__title { font-size: clamp(20px, 3vw, 26px); }
+  .tech-cover__technologies { font-size: 9px; }
+}
+
+@media (min-width: 601px) and (max-width: 800px) {
+  .tech-cover--frontend { padding-left: 24px; }
+}
+
+@media (max-width: 600px) {
+  .skills-section { padding-bottom: 72px; }
+  .technology-exhibit { margin-top: 28px; }
+  .technology-exhibit__masthead { top: 20px; font-size: clamp(39px, 10vw, 58px); }
+  .technology-exhibit__covers {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 8px;
+    min-height: 0;
+    padding: 84px 6px 35px;
+  }
+  .tech-cover {
+    width: 100%;
+    height: 250px;
+    min-width: 0;
+    padding: 13px;
+    transform: rotate(var(--angle));
+  }
+  .tech-cover + .tech-cover { margin-left: 0; }
+  .tech-cover:hover,
+  .tech-cover:focus-visible,
+  .tech-cover--active { transform: translateY(-8px) rotate(0deg); }
+  .tech-cover__header,
+  .tech-cover__footer { font-size: 7px; }
+  .tech-cover__title { margin-top: 18px; font-size: clamp(20px, 6vw, 30px); }
+  .tech-cover__technologies { gap: 4px; padding: 12px 0; font-size: 9px; }
+  .technology-exhibit__caption { font-size: 8px; }
+  .technology-exhibit__caption span:last-child { text-align: right; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech-cover { transition: none; }
 }
