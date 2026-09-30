@@ -37,7 +37,7 @@ export default function CustomCursor() {
 
       const target = event.target instanceof Element ? event.target : null
       const native = Boolean(target?.closest('input, textarea, select, [contenteditable="true"]'))
-      const interactive = Boolean(target?.closest('a, button, [role="tab"]'))
+      const interactive = Boolean(target?.closest('a, button, [role="tab"], canvas[data-rotatable]'))
       const nextLabel = target?.closest<HTMLElement>('[data-cursor]')?.dataset.cursor ?? ''
 
       if (nextLabel !== currentLabel) {

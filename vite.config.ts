@@ -1,9 +1,24 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { getGitHubStats } from './api/_github-stats'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), {
+    name: 'github-stats-dev',
+    configureServer(server) {
+      server.middlewares.use('/api/github-stats', async (_request, response) => {
+        try {
+          const stats = await getGitHubStats()
+          response.setHeader('Content-Type', 'application/json')
+          response.end(JSON.stringify(stats))
+        } catch {
+          response.statusCode = 503
+          response.end(JSON.stringify({ error: 'GitHub activity is unavailable right now.' }))
+        }
+      })
+    },
+  }],
   build: {
     chunkSizeWarningLimit: 1000,
     rollupOptions: {

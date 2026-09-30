@@ -1,0 +1,66 @@
+.github-activity { overflow: hidden; }
+.github-activity__heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; }
+.github-activity__heading .section__headline { margin-bottom: 0; }
+.github-activity__profile { flex-shrink: 0; margin-bottom: 8px; color: var(--ink-blue); font: 500 13px/1.4 var(--font-mono); text-decoration: none; }
+.github-activity__profile:hover, .github-activity__commit:hover { text-decoration: underline; text-underline-offset: 5px; }
+.github-activity__status { min-height: 140px; margin-top: 54px; padding-top: 24px; border-top: 1px solid var(--rule-blue); color: var(--ink-muted); font: 14px/1.6 var(--font-mono); }
+.github-activity__status a { color: var(--ink-blue); }
+.github-activity__topline { display: grid; grid-template-columns: minmax(250px, 0.45fr) minmax(0, 1fr); gap: clamp(32px, 7vw, 100px); margin-top: 58px; padding: 34px 0 42px; border-top: 1px solid var(--rule-blue); border-bottom: 1px solid var(--rule-blue); }
+.github-activity__metric { display: flex; align-items: flex-end; gap: 20px; color: var(--ink-blue); }
+.github-activity__metric strong { font: 400 clamp(68px, 8vw, 108px)/0.84 var(--font-editorial); }
+.github-activity__metric span { padding-bottom: 5px; font: 12px/1.5 var(--font-mono); }
+.github-activity__label { margin-bottom: 17px; color: var(--ink-blue); font: 600 11px/1.3 var(--font-mono); letter-spacing: 0.08em; }
+.github-activity__latest { min-width: 0; }
+.github-activity__commit { display: inline-block; max-width: 100%; color: var(--ink-blue); font: 400 clamp(25px, 3vw, 38px)/1.1 var(--font-editorial); overflow-wrap: anywhere; text-decoration: none; }
+.github-activity__meta { margin-top: 16px; color: var(--ink-muted); font: 11px/1.6 var(--font-mono); overflow-wrap: anywhere; }
+.github-activity__meta span { padding: 0 8px; color: #9badcb; }
+.github-activity__activity { padding: 38px 0 42px; border-bottom: 1px solid var(--rule-blue); }
+.github-activity__row-heading, .github-activity__graph-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--ink-muted); font: 11px/1.4 var(--font-mono); }
+.github-activity__row-heading .github-activity__label { margin: 0; }
+.github-activity__calendar { width: 100%; margin-top: 28px; overflow-x: auto; scrollbar-width: thin; scrollbar-color: #b7c7e1 transparent; }
+.github-activity__calendar-inner { min-width: 810px; }
+.github-activity__months { display: grid; gap: 3px; margin-left: 31px; height: 22px; color: var(--ink-muted); font: 11px/1 var(--font-mono); }
+.github-activity__months span { white-space: nowrap; }
+.github-activity__graph-wrap { display: flex; gap: 9px; }
+.github-activity__weekdays { display: grid; grid-template-rows: repeat(7, 1fr); width: 22px; color: var(--ink-muted); font: 10px/1 var(--font-mono); }
+.github-activity__weekdays span:nth-child(1) { grid-row: 2; }
+.github-activity__weekdays span:nth-child(2) { grid-row: 4; }
+.github-activity__weekdays span:nth-child(3) { grid-row: 6; }
+.github-activity__graph { display: flex; flex: 1; gap: 3px; }
+.github-activity__week { display: grid; grid-template-rows: repeat(7, 1fr); flex: 1; gap: 3px; }
+.github-activity__day { display: block; aspect-ratio: 1; width: 100%; min-width: 0; border: 1px solid rgba(23, 63, 145, 0.08); }
+.github-activity__day--outside { background: transparent; border-color: transparent; }
+.github-activity__day--0 { background: #eef2f8; }
+.github-activity__day--1 { background: #c5d4eb; }
+.github-activity__day--2 { background: #86a6d2; }
+.github-activity__day--3 { background: #4774b8; }
+.github-activity__day--4 { background: var(--ink-blue); }
+.github-activity__graph-footer { margin-top: 21px; }
+.github-activity__legend { display: flex; align-items: center; gap: 4px; }
+.github-activity__legend .github-activity__day { width: 12px; height: 12px; flex: 0 0 12px; }
+.github-activity__legend span:first-child { margin-right: 5px; }
+.github-activity__legend span:last-child { margin-left: 5px; }
+.github-activity__languages { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(40px, 9vw, 130px); padding: 48px 0 40px; }
+.github-activity__languages h3 { max-width: 12ch; color: var(--ink-blue); font: 400 clamp(33px, 4vw, 50px)/1.05 var(--font-editorial); }
+.github-activity__languages p:not(.github-activity__label) { max-width: 46ch; margin-top: 18px; color: var(--ink-muted); font: 14px/1.6 var(--font-body); }
+.github-activity__language-list { align-self: center; }
+.github-activity__language { display: grid; grid-template-columns: 26px minmax(95px, 135px) minmax(40px, 1fr) 25px; align-items: center; gap: 12px; min-height: 48px; border-bottom: 1px solid var(--rule-blue); }
+.github-activity__language:first-child { border-top: 1px solid var(--rule-blue); }
+.github-activity__language-index, .github-activity__language-count { color: var(--ink-muted); font: 11px/1 var(--font-mono); }
+.github-activity__language-name { color: var(--ink-blue); font: 500 14px/1.3 var(--font-body); }
+.github-activity__language-track { height: 3px; background: #e8edf5; }
+.github-activity__language-track > span { display: block; height: 100%; background: var(--ink-blue); }
+.github-activity__language-count { text-align: right; }
+.github-activity__empty { color: var(--ink-muted); font: 14px/1.5 var(--font-body); }
+.github-activity__updated { padding-top: 17px; border-top: 1px solid var(--rule-blue); color: #778ba9; font: 10px/1.4 var(--font-mono); letter-spacing: 0.04em; }
+
+@media (max-width: 734px) {
+  .github-activity__heading { align-items: start; flex-direction: column; }
+  .github-activity__profile { margin: 0; }
+  .github-activity__topline { grid-template-columns: 1fr; gap: 38px; margin-top: 42px; }
+  .github-activity__metric strong { font-size: 82px; }
+  .github-activity__languages { grid-template-columns: 1fr; gap: 28px; }
+  .github-activity__language { grid-template-columns: 24px minmax(86px, 120px) minmax(25px, 1fr) 20px; gap: 8px; }
+  .github-activity__graph-footer { flex-wrap: wrap; }
+  .github-activity__row-heading { align-items: start; flex-direction: column; gap: 5px; }
+}
