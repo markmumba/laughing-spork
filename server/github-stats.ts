@@ -1,4 +1,4 @@
-import type { GitHubStats } from '../src/lib/github-stats.types'
+import type { GitHubStats } from '../src/lib/github-stats.types.js'
 
 const LOGIN = 'markmumba'
 const API = 'https://api.github.com'

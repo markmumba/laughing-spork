@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { getGitHubStats } from './api/_github-stats'
+import { getGitHubStats } from './server/github-stats.js'
 
 // https://vite.dev/config/
 export default defineConfig({
