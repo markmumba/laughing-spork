@@ -27,3 +27,10 @@ export function optimizeContentfulImageUrl(
     return url
   }
 }
+
+/** Builds a srcset of Contentful renditions so phones download a phone-sized image. */
+export function contentfulSrcSet(url: string, widths: number[], quality = 70): string {
+  return widths
+    .map((width) => `${optimizeContentfulImageUrl(url, { width, quality })} ${width}w`)
+    .join(', ')
+}

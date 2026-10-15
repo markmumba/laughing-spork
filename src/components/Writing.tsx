@@ -1,7 +1,7 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { getEssaysForHomepage, type EssayItem } from '../lib/contentful'
-import { optimizeContentfulImageUrl } from '../lib/contentful-image'
+import { contentfulSrcSet, optimizeContentfulImageUrl } from '../lib/contentful-image'
 import { useReveal } from '../hooks/useReveal'
 import './Writing.css'
 
@@ -28,106 +28,58 @@ function richTextToPlain(rich: unknown): string {
   return parts.join(' ')
 }
 
-function getExcerpt(article: unknown, chars = 220): string {
-  const text = richTextToPlain(article).trim()
-  if (!text) return ''
-  return text.length > chars ? text.slice(0, chars).trimEnd() + '…' : text
-}
-
 function formatDate(raw: string): string {
   try {
     return new Date(raw).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   } catch { return '' }
 }
 
+function readingTime(article: unknown): number {
+  const words = richTextToPlain(article).trim().split(/\s+/).filter(Boolean).length
+  return Math.max(1, Math.round(words / 230))
+}
+
 export default function Writing() {
   const ref = useReveal()
   const [essays, setEssays] = useState<EssayItem[]>([])
-  const [activeIdx, setActiveIdx] = useState(0)
-  const trackRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    getEssaysForHomepage().then(setEssays)
+    getEssaysForHomepage().then((items) => setEssays(items.slice(0, 3)))
   }, [])
 
-  const scrollToIdx = (idx: number) => {
-    const track = trackRef.current
-    if (!track) return
-    const card = track.children[idx] as HTMLElement
-    if (!card) return
-    track.scrollTo({ left: card.offsetLeft - track.offsetLeft, behavior: 'smooth' })
-    setActiveIdx(idx)
-  }
-
-  const handleScroll = () => {
-    const track = trackRef.current
-    if (!track || !track.children[0]) return
-    const cardWidth = (track.children[0] as HTMLElement).offsetWidth + 24
-    setActiveIdx(Math.round(track.scrollLeft / cardWidth))
-  }
-
   return (
-    <section id="writing" className="section section--white writing-section">
+    <section id="writing" className="section writing-section" aria-labelledby="writing-title">
       <div className="container">
-        <div ref={ref} className="reveal">
-          <p className="section__eyebrow">WRITING</p>
-          <h2 className="section__headline">Thoughts &amp; ideas.</h2>
-          <p className="section__sub">Where I share what I'm learning and thinking about.</p>
+        <div ref={ref} className="reveal section-head section-head--row">
+          <div>
+            <h2 id="writing-title" className="section-head__title">Writing</h2>
+            <p className="section-head__sub">Where I share what I'm learning and thinking about.</p>
+          </div>
+          <RouterLink to="/essays" className="btn btn--text">All essays</RouterLink>
         </div>
-      </div>
 
-      <div className="writing-carousel-wrap" aria-live="polite" aria-atomic="false">
-        <div className="writing-carousel" ref={trackRef} onScroll={handleScroll}>
+        <div className="writing-grid">
           {essays.map((essay) => {
             const title    = extractText(essay.title)
             const date     = formatDate(extractText(essay.publishDate as string))
-            const category = extractText(essay.category)
-            const excerpt  = getExcerpt(essay.article)
+            const category = extractText(essay.category) || 'Essay'
             const imgSrc   = essay.blogImage
-              ? optimizeContentfulImageUrl(essay.blogImage, { width: 900 })
+              ? optimizeContentfulImageUrl(essay.blogImage, { width: 600, quality: 70 })
               : ''
             return (
-              <RouterLink
-                key={essay.id}
-                to={`/essays/${essay.id}`}
-                className="writing-card"
-              >
-                <div className="writing-card__text">
-                  {(category || date) && (
-                    <p className="writing-card__meta">
-                      {category}{category && date ? ' · ' : ''}{date}
-                    </p>
-                  )}
-                  <h3 className="writing-card__title">{title}</h3>
-                  {excerpt && <p className="writing-card__excerpt">{excerpt}</p>}
-                  <span className="writing-card__cta">Read article ›</span>
+              <RouterLink key={essay.id} to={`/essays/${essay.id}`} className="post-card">
+                <div className="post-card__img">
+                  {imgSrc && <img src={imgSrc} srcSet={contentfulSrcSet(essay.blogImage, [400, 600, 800], 60)} sizes="(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 410px" alt="" loading="lazy" decoding="async" />}
                 </div>
-                {imgSrc && (
-                  <div className="writing-card__img">
-                    <img src={imgSrc} alt="" loading="lazy" decoding="async" />
-                  </div>
-                )}
+                <span className="chip">{category}</span>
+                <h3 className="post-card__title">{title}</h3>
+                <p className="post-card__meta">
+                  {date}{date ? ' • ' : ''}{readingTime(essay.article)}-minute read
+                </p>
               </RouterLink>
             )
           })}
         </div>
-
-        {essays.length > 1 && (
-          <div className="writing-carousel__dots">
-            {essays.map((_, i) => (
-              <button
-                key={i}
-                className={`carousel-dot${i === activeIdx ? ' carousel-dot--active' : ''}`}
-                onClick={() => scrollToIdx(i)}
-                aria-label={`Article ${i + 1}`}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="container writing-carousel__footer">
-        <RouterLink to="/essays" className="cta-link">All articles ›</RouterLink>
       </div>
     </section>
   )

@@ -275,6 +275,16 @@ export default function ArticlePage() {
   const metaDesc = essay ? richTextToPlain(essay.article).slice(0, 160).trimEnd() : undefined
   usePageMeta({ title: metaTitle, description: metaDesc, image: essay?.blogImage || undefined })
 
+  // Manuscript fonts are scoped to this route; the rest of the site uses Google Sans
+  useEffect(() => {
+    const href = 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400..600&display=swap'
+    if (document.querySelector(`link[href="${href}"]`)) return
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = href
+    document.head.appendChild(link)
+  }, [])
+
   useEffect(() => {
     if (!id) return
     window.scrollTo(0, 0)

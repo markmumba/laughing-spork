@@ -1,5 +1,7 @@
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { usePageMeta } from '../lib/usePageMeta'
+import Nav from '../components/Nav'
+import Footer from '../components/Footer'
 import './ResumePage.css'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -80,6 +82,13 @@ const skills: Record<string, string[]> = {
   Concepts: ['REST APIs', 'Microservices', 'CI/CD', 'System Design', 'Security', 'Scalability', 'Cloud Deployment', 'gRPC', 'OAuth2/OIDC', 'Testing (JUnit, Mockito)', 'Domain-Driven Design', 'Event-Driven Architecture'],
 }
 
+const sections = [
+  { id: 'experience', label: 'Experience' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'education', label: 'Education' },
+  { id: 'skills', label: 'Skills' },
+]
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ResumePage() {
@@ -87,139 +96,140 @@ export default function ResumePage() {
     title: 'Resume',
     description: 'Fullstack Developer specializing in Java, Spring Boot, distributed systems, and microservices. Based in Nairobi, Kenya.',
   })
+  const [active, setActive] = useState(sections[0].id)
+
+  // Highlight the "On this page" entry for the section nearest the top
+  useEffect(() => {
+    let frame = 0
+    const update = () => {
+      frame = 0
+      let current = sections[0].id
+      for (const section of sections) {
+        const el = document.getElementById(section.id)
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.3) current = section.id
+      }
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) current = sections[sections.length - 1].id
+      setActive(current)
+    }
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update) }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [])
 
   return (
     <div className="resume-page">
+      <Nav page="resume" />
 
-      {/* Nav */}
-      <nav className="resume-nav">
-        <div className="resume-nav__inner">
-          <Link to="/" className="resume-nav__home">← Home</Link>
-          <a
-            href="/cv.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="resume-nav__download"
-          >
-            Download PDF ↓
-          </a>
-        </div>
-      </nav>
-
-      {/* Header */}
-      <header className="resume-header">
-        <div className="resume-header__inner">
+      <main>
+        <header className="resume-header">
           <h1 className="resume-header__name">Markian Mumba</h1>
-          <p className="resume-header__title">Fullstack Developer · Backend Engineer</p>
-          <div className="resume-header__contact" aria-label="Contact information">
-            <a href="mailto:mumbamarkian@gmail.com">mumbamarkian@gmail.com</a>
-            <span aria-hidden="true">·</span>
-            <a href="tel:+254798169252">+254 798 169 252</a>
-            <span aria-hidden="true">·</span>
-            <span>Nairobi, Kenya</span>
-            <span aria-hidden="true">·</span>
-            <a href="https://www.linkedin.com/in/markian-mumba-67231517a/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <span aria-hidden="true">·</span>
-            <a href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <span aria-hidden="true">·</span>
-            <a href="https://markian.fit" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <p className="resume-header__title">Fullstack Developer • Backend Engineer</p>
+          <ul className="resume-header__contact" aria-label="Contact information">
+            <li><span className="chip">Nairobi, Kenya</span></li>
+            <li><a className="chip" href="mailto:mumbamarkian@gmail.com">mumbamarkian@gmail.com</a></li>
+            <li><a className="chip" href="tel:+254798169252">+254 798 169 252</a></li>
+            <li><a className="chip" href="https://www.linkedin.com/in/markian-mumba-67231517a/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a className="chip" href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+          <div className="resume-header__actions">
+            <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="btn btn--filled">Download PDF</a>
+            <a href="mailto:mumbamarkian@gmail.com" className="btn btn--outlined">Email me</a>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="resume-body">
-        <div className="resume-container">
+        <div className="resume-layout">
+          <nav className="resume-toc" aria-label="On this page">
+            <p className="resume-toc__title">On this page</p>
+            <ul>
+              {sections.map((section) => (
+                <li key={section.id}>
+                  <a
+                    href={`#${section.id}`}
+                    className={active === section.id ? 'is-active' : undefined}
+                    aria-current={active === section.id ? 'location' : undefined}
+                  >
+                    {section.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-          {/* Experience */}
-          <section className="resume-section" aria-labelledby="exp-heading">
-            <h2 id="exp-heading" className="resume-section__heading">Experience</h2>
-            {experience.map((job) => (
-              <div key={`${job.company}-${job.role}`} className="resume-entry">
-                <div className="resume-entry__header">
-                  <div>
-                    <h3 className="resume-entry__role">{job.role}</h3>
-                    <p className="resume-entry__company">{job.company}</p>
+          <div className="resume-content">
+            <section id="experience" className="resume-section" aria-labelledby="exp-heading">
+              <h2 id="exp-heading" className="resume-section__heading">Experience</h2>
+              {experience.map((job) => (
+                <article key={`${job.company}-${job.role}`} className="resume-entry">
+                  <div className="resume-entry__header">
+                    <div>
+                      <h3 className="resume-entry__role">{job.role}</h3>
+                      <p className="resume-entry__org">{job.company}</p>
+                    </div>
+                    <span className="resume-entry__period">{job.period}</span>
                   </div>
-                  <p className="resume-entry__period">{job.period}</p>
-                </div>
-                <ul className="resume-entry__bullets">
-                  {job.bullets.map((b, i) => <li key={i}>{b}</li>)}
-                </ul>
-              </div>
-            ))}
-          </section>
+                  <ul className="resume-entry__bullets">
+                    {job.bullets.map((b, i) => <li key={i}>{b}</li>)}
+                  </ul>
+                </article>
+              ))}
+            </section>
 
-          {/* Projects */}
-          <section className="resume-section" aria-labelledby="proj-heading">
-            <h2 id="proj-heading" className="resume-section__heading">Projects</h2>
-            {projects.map((p) => (
-              <div key={p.name} className="resume-entry">
-                <div className="resume-entry__header">
-                  <div className="resume-entry__project-title">
+            <section id="projects" className="resume-section" aria-labelledby="proj-heading">
+              <h2 id="proj-heading" className="resume-section__heading">Projects</h2>
+              {projects.map((p) => (
+                <article key={p.name} className="resume-entry">
+                  <div className="resume-entry__header">
                     <h3 className="resume-entry__role">
                       <a href={p.url} target="_blank" rel="noopener noreferrer">{p.name}</a>
                     </h3>
-                    <div className="resume-entry__tags">
-                      {p.tags.map((t) => <span key={t} className="resume-entry__tag">{t}</span>)}
-                    </div>
                   </div>
-                </div>
-                <ul className="resume-entry__bullets">
-                  {p.bullets.map((b, i) => <li key={i}>{b}</li>)}
-                </ul>
-              </div>
-            ))}
-          </section>
-
-          {/* Education */}
-          <section className="resume-section" aria-labelledby="edu-heading">
-            <h2 id="edu-heading" className="resume-section__heading">Education</h2>
-            {education.map((e) => (
-              <div key={e.school} className="resume-entry resume-entry--edu">
-                <div className="resume-entry__header">
-                  <div>
-                    <h3 className="resume-entry__role">{e.degree}</h3>
-                    <p className="resume-entry__company">{e.school}</p>
+                  <div className="resume-entry__tags">
+                    {p.tags.map((t) => <span key={t} className="chip">{t}</span>)}
                   </div>
-                  <p className="resume-entry__period">{e.year}</p>
-                </div>
-              </div>
-            ))}
-          </section>
-
-          {/* Skills */}
-          <section className="resume-section" aria-labelledby="skills-heading">
-            <h2 id="skills-heading" className="resume-section__heading">Skills</h2>
-            <div className="resume-skills">
-              {Object.entries(skills).map(([category, items]) => (
-                <div key={category} className="resume-skills__group">
-                  <p className="resume-skills__category">{category}</p>
-                  <div className="resume-skills__tags">
-                    {items.map((skill) => (
-                      <span key={skill} className="resume-skills__tag">{skill}</span>
-                    ))}
-                  </div>
-                </div>
+                  <ul className="resume-entry__bullets">
+                    {p.bullets.map((b, i) => <li key={i}>{b}</li>)}
+                  </ul>
+                </article>
               ))}
-            </div>
-          </section>
+            </section>
 
+            <section id="education" className="resume-section" aria-labelledby="edu-heading">
+              <h2 id="edu-heading" className="resume-section__heading">Education</h2>
+              {education.map((e) => (
+                <article key={e.school} className="resume-entry resume-entry--compact">
+                  <div className="resume-entry__header">
+                    <div>
+                      <h3 className="resume-entry__role">{e.degree}</h3>
+                      <p className="resume-entry__org">{e.school}</p>
+                    </div>
+                    <span className="resume-entry__period">{e.year}</span>
+                  </div>
+                </article>
+              ))}
+            </section>
+
+            <section id="skills" className="resume-section" aria-labelledby="skills-heading">
+              <h2 id="skills-heading" className="resume-section__heading">Skills</h2>
+              <dl className="resume-skills">
+                {Object.entries(skills).map(([category, items]) => (
+                  <div key={category} className="resume-skills__group">
+                    <dt className="resume-skills__category">{category}</dt>
+                    <dd className="resume-skills__tags">
+                      {items.map((skill) => <span key={skill} className="chip">{skill}</span>)}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          </div>
         </div>
       </main>
 
-      <footer className="footer">
-        <div className="container">
-          <div className="footer__inner">
-            <p className="footer__copy">© 2026 Markian Mumba Mwangi. All rights reserved.</p>
-            <div className="footer__links">
-              <Link to="/">Home</Link>
-              <Link to="/essays">Writing</Link>
-              <a href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a href="mailto:mumbamarkian@gmail.com">Email</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

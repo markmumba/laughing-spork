@@ -50,6 +50,8 @@ export interface EssayItem {
   nugget: unknown
   nuggetAuthor: unknown
   sys: unknown
+  /** Present on build-time snapshot items (server/essays-snapshot.ts), whose `article` body is omitted */
+  summary?: { words: number; text: string }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
