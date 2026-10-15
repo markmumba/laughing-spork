@@ -1,6 +1,15 @@
 .article-page {
   background: #fff;
   min-height: 100vh;
+  /* Legacy editorial tokens, pinned so the manuscript layout is unaffected by the global redesign */
+  --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-editorial: 'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  --ink-blue: #173f91;
+  --ink-muted: #4f6388;
+  --rule-blue: rgba(23, 63, 145, 0.22);
+  --accent-gold: #d4a447;
   --article-copy: #344b70;
   --article-muted: #63779b;
   --article-tint: #f2f5fa;
@@ -387,6 +396,8 @@
   color: var(--ink-blue);
   padding: 2px 7px;
   border-radius: 3px;
+  /* Long identifiers in inline code must not widen the page on phones */
+  overflow-wrap: anywhere;
 }
 
 .article-hr {
@@ -621,3 +632,30 @@
   from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* Back-to-writing link (previously borrowed from the homepage stylesheet) */
+.article-page .cta-link {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ink-blue);
+  text-decoration: none;
+  transition: opacity 180ms ease;
+}
+
+.article-page .cta-link:hover { opacity: 0.6; }
+
+/* Loading spinner (previously borrowed from the essays stylesheet) */
+.article-page .essays-loading {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #e5e5ea;
+  border-top-color: #1d1d1f;
+  border-radius: 50%;
+  animation: article-spin 0.7s linear infinite;
+  margin: 80px auto;
+}
+
+@keyframes article-spin { to { transform: rotate(360deg); } }

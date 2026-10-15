@@ -100,65 +100,67 @@ export default function GitHubActivity() {
   const maxLanguageCount = Math.max(1, ...(data?.languages.map((language) => language.count) ?? []))
 
   return (
-    <section id="github-activity" className="section section--white github-activity" aria-labelledby="github-activity-title">
+    <section id="github-activity" className="section section--surface github-activity" aria-labelledby="github-activity-title">
       <div className="container">
-        <div ref={headingRef} className="reveal github-activity__heading">
+        <div ref={headingRef} className="reveal section-head section-head--row">
           <div>
-            <p className="section__eyebrow">GITHUB / PUBLIC WORK</p>
-            <h2 id="github-activity-title" className="section__headline">In the making.</h2>
+            <h2 id="github-activity-title" className="section-head__title">GitHub activity</h2>
+            <p className="section-head__sub">What I've been building in public lately.</p>
           </div>
-          <a className="github-activity__profile" href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">View GitHub profile <span aria-hidden="true">↗</span></a>
+          <a className="btn btn--text" href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">View GitHub profile</a>
         </div>
 
         {state.status === 'loading' && <p className="github-activity__status" role="status">Loading public GitHub activity...</p>}
-        {state.status === 'error' && <p className="github-activity__status" role="status">GitHub activity is unavailable right now. <a href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">Browse my repositories ↗</a></p>}
+        {state.status === 'error' && <p className="github-activity__status" role="status">GitHub activity is unavailable right now. <a href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">Browse my repositories</a></p>}
 
-        {data && <>
-          <div className="github-activity__topline">
-            <div className="github-activity__metric">
-              <strong>{data.totalCommits.toLocaleString()}</strong>
-              <span>public default-branch commits<br />in the past year{data.partial ? ' (partial)' : ''}</span>
-            </div>
-            <div className="github-activity__latest">
-              <p className="github-activity__label">LATEST COMMIT</p>
-              {data.latestCommit ? <>
-                <a href={data.latestCommit.url} target="_blank" rel="noopener noreferrer" className="github-activity__commit">{data.latestCommit.message} <span aria-hidden="true">↗</span></a>
-                <p className="github-activity__meta">{data.latestCommit.repo} <span aria-hidden="true">/</span> {data.latestCommit.sha} <span aria-hidden="true">/</span> {dateLabel(data.latestCommit.date)}</p>
-              </> : <p className="github-activity__empty">No public commits in this period.</p>}
-            </div>
+        {data && <div className="github-activity__grid">
+          <div className="gh-card gh-card--metric">
+            <p className="gh-card__label">Commits</p>
+            <strong className="gh-card__number">{data.totalCommits.toLocaleString()}</strong>
+            <p className="gh-card__caption">Public default-branch commits in the past year{data.partial ? ' (partial)' : ''}</p>
           </div>
 
-          <div className="github-activity__activity">
-            <div className="github-activity__row-heading">
-              <p className="github-activity__label">A YEAR IN COMMITS</p>
-              <span>{dateLabel(data.range.start)} - {dateLabel(data.range.end)}</span>
+          <div className="gh-card gh-card--latest">
+            <p className="gh-card__label">Latest commit</p>
+            {data.latestCommit ? <>
+              <a href={data.latestCommit.url} target="_blank" rel="noopener noreferrer" className="gh-card__commit">{data.latestCommit.message}</a>
+              <p className="gh-card__caption">
+                <span className="chip">{data.latestCommit.repo}</span>
+                <code>{data.latestCommit.sha}</code>
+                <span>{dateLabel(data.latestCommit.date)}</span>
+              </p>
+            </> : <p className="gh-card__caption">No public commits in this period.</p>}
+          </div>
+
+          <div className="gh-card gh-card--wide">
+            <div className="gh-card__row">
+              <p className="gh-card__label">A year in commits</p>
+              <span className="gh-card__muted">{dateLabel(data.range.start)} – {dateLabel(data.range.end)}</span>
             </div>
             <ActivityGrid data={data} />
-            <div className="github-activity__graph-footer">
-              <span>Public default-branch commits only</span>
+            <div className="gh-card__row github-activity__graph-footer">
+              <span className="gh-card__muted">Public default-branch commits only</span>
               <div className="github-activity__legend" aria-label="Activity intensity from less to more"><span>Less</span>{[0, 1, 2, 3, 4].map((level) => <i key={level} className={`github-activity__day github-activity__day--${level}`} />)}<span>More</span></div>
             </div>
           </div>
 
-          <div className="github-activity__languages">
+          <div className="gh-card gh-card--wide gh-card--languages">
             <div>
-              <p className="github-activity__label">LANGUAGES IN MOTION</p>
-              <h3>What I've touched lately.</h3>
-              <p>Languages found in files changed across {data.languageSampleSize} recent public commits. A commit can count toward more than one language.</p>
+              <p className="gh-card__label">Languages in motion</p>
+              <p className="gh-card__caption">Languages found in files changed across {data.languageSampleSize} recent public commits. A commit can count toward more than one language.</p>
             </div>
             <div className="github-activity__language-list">
-              {data.languages.length ? data.languages.map((language, index) => (
+              {data.languages.length ? data.languages.map((language) => (
                 <div className="github-activity__language" key={language.name}>
-                  <span className="github-activity__language-index">0{index + 1}</span>
                   <span className="github-activity__language-name">{language.name}</span>
                   <span className="github-activity__language-track"><span style={{ width: `${(language.count / maxLanguageCount) * 100}%` }} /></span>
                   <span className="github-activity__language-count">{language.count}</span>
                 </div>
-              )) : <p className="github-activity__empty">No recognized code files in the recent sample.</p>}
+              )) : <p className="gh-card__caption">No recognized code files in the recent sample.</p>}
             </div>
           </div>
-          <p className="github-activity__updated">PUBLIC GITHUB DATA / UPDATED {dateLabel(data.fetchedAt)}</p>
-        </>}
+          <p className="github-activity__updated">Public GitHub data, updated {dateLabel(data.fetchedAt)}</p>
+        </div>}
       </div>
     </section>
   )

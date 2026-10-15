@@ -1,34 +1,29 @@
 .wordmark {
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: baseline;
+  gap: 6px;
   width: max-content;
   max-width: 100%;
-  color: var(--ink-blue);
+  font-family: var(--font-display);
   line-height: 1;
+  white-space: nowrap;
 }
 
 .wordmark__given {
-  font-family: var(--font-editorial);
-  font-size: 24px;
-  font-style: italic;
-  font-weight: 400;
-  line-height: 1;
-  white-space: nowrap;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink-blue);
 }
 
 .wordmark__period { color: var(--accent-gold); }
 
 .wordmark__family {
-  margin: 3px 0 0 2px;
-  font-family: var(--font-editorial);
-  font-size: 11px;
-  font-style: normal;
+  font-size: 22px;
   font-weight: 400;
-  line-height: 1;
   color: var(--ink-muted);
-  white-space: nowrap;
 }
 
-.wordmark--large .wordmark__given { font-size: 38px; }
-.wordmark--large .wordmark__family { margin-top: 5px; font-size: 15px; }
+@media (max-width: 480px) {
+  .wordmark__family { display: none; }
+}

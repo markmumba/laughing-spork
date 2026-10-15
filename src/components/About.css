@@ -1,130 +1,104 @@
 .about__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 350px;
-  gap: 100px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 64px;
   align-items: start;
 }
 
-.about__left .section__headline { font-size: 4rem; }
+.about__text { position: sticky; top: calc(var(--nav-height) + 32px); }
 
-@media (max-width: 900px) {
-  .about__grid {
-    grid-template-columns: 1fr;
-    gap: 48px;
-  }
+.about__title {
+  margin: 24px 0;
+  font-size: clamp(2rem, 1.4rem + 2vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.about__lead {
+  margin-bottom: 20px;
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--color-text);
 }
 
 .about__body {
-  font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.7;
-  color: #39465a;
-  margin: 0 0 22px;
-  font-weight: 300;
-  max-width: 62ch;
+  margin-bottom: 16px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--color-text-3);
 }
 
-.about__quote {
-  margin: 40px 0 0;
-  padding: 32px 0 0;
-  border-top: 1px solid #e5e5ea;
-}
-
-.about__quote p {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1.5;
-  color: #1d1d1f;
-  margin: 0 0 14px;
-  letter-spacing: -0.015em;
-}
-
-.about__quote cite {
-  font-family: var(--font-body);
-  font-size: 12px;
-  color: #6e6e73;
-  font-style: normal;
-  letter-spacing: 0.05em;
-  font-weight: 500;
+.about__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .about__card {
-  padding: 24px 0;
-  border-top: 1px solid var(--rule-blue);
+  padding: 32px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
 }
 
-.about__card:last-child { border-bottom: 1px solid var(--rule-blue); }
-
-.about__card-label {
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.13em;
-  color: var(--ink-blue);
-  margin: 0 0 18px;
-}
-
-.about__focus-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.about__focus-list li {
-  font-family: var(--font-body);
-  font-size: 14px;
+.about__card-title {
+  margin-bottom: 16px;
+  font-size: 22px;
   font-weight: 400;
-  color: #39465a;
-  padding-left: 16px;
+  color: var(--color-text);
+}
+
+.about__list { list-style: none; }
+
+.about__list li {
   position: relative;
+  padding: 10px 0 10px 28px;
+  font-size: 16px;
   line-height: 1.5;
+  color: var(--color-text-2);
+  border-top: 1px solid var(--color-border);
 }
 
-.about__focus-list li::before {
-  content: '—';
+.about__list li:first-child { border-top: 0; }
+
+.about__list li::before {
+  content: '';
   position: absolute;
-  left: 0;
-  color: var(--accent-gold);
+  left: 4px;
+  top: 18px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
 }
 
-.about__exp-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-}
+.about__exp { list-style: none; }
 
-.about__exp-list li {
+.about__exp li {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12px;
-  padding: 13px 0;
-  border-bottom: 1px solid var(--rule-blue);
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--color-border);
 }
 
-.about__exp-list li:last-child {
-  padding-bottom: 0;
-  border-bottom: none;
+.about__exp li:first-child { border-top: 0; padding-top: 4px; }
+
+.about__exp-role { font-size: 18px; font-weight: 500; color: var(--color-text); }
+.about__exp-meta { font-size: 16px; color: var(--color-text-3); white-space: nowrap; }
+
+.about__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+@media (max-width: 900px) {
+  .about__grid { grid-template-columns: 1fr; gap: 40px; }
+  .about__text { position: static; }
 }
 
-.exp__role {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--ink-blue);
-}
-
-.exp__company {
-  font-family: var(--font-body);
-  font-size: 12px;
-  color: var(--ink-muted);
-  font-weight: 400;
-  white-space: nowrap;
-}
-
-@media (max-width: 734px) {
-  .about__left .section__headline { font-size: 2.65rem; }
+@media (max-width: 480px) {
+  .about__card { padding: 24px; }
+  .about__lead { font-size: 20px; }
+  .about__exp li { flex-direction: column; gap: 4px; }
 }

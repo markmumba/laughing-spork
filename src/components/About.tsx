@@ -1,22 +1,36 @@
 import { useReveal } from '../hooks/useReveal'
+import { experience } from '../lib/site-data'
 import './About.css'
 
+const focusAreas = [
+  'Backend architecture and API design',
+  'Distributed systems and microservices',
+  'Database design and performance optimization',
+  'Event-driven systems and asynchronous processing',
+  'Cloud infrastructure and containerized deployments',
+  'Reliability, resilience, and scalable software design',
+]
+
+const openTo = [
+  'Backend Engineering',
+  'Software Engineering',
+  'Distributed Systems',
+  'Platform Engineering',
+  'Cloud & Infrastructure Engineering',
+]
+
 export default function About() {
-  const headerRef = useReveal()
-  const gridRef = useReveal()
+  const textRef = useReveal()
+  const cardsRef = useReveal()
   return (
-    <section id="about" className="section section--gray about-section">
+    <section id="about" className="section section--surface" aria-labelledby="about-title">
       <div className="container">
-        <div ref={headerRef} className="reveal about__grid">
-          <div className="about__left">
-            <p className="section__eyebrow">ABOUT</p>
-            <h2 className="section__headline">
-              Software Engineer
-              <br />
-              specializing in backend.
-            </h2>
-            <p className="about__body">
-              I build backend systems that are reliable, maintainable, and designed to scale—from
+        <div className="about__grid">
+          <div ref={textRef} className="reveal about__text">
+            <span className="chip">About</span>
+            <h2 id="about-title" className="about__title">Software engineer specializing in backend.</h2>
+            <p className="about__lead">
+              I build backend systems that are reliable, maintainable, and designed to scale, from
               REST APIs and microservices to asynchronous workflows and cloud-native applications.
             </p>
             <p className="about__body">
@@ -26,52 +40,38 @@ export default function About() {
             </p>
             <p className="about__body">
               Beyond writing code, I am deeply interested in the engineering principles behind great
-              systems—studying distributed systems, data-intensive applications, system design, and
-              software architecture to continuously improve how I build software.
+              systems: distributed systems, data-intensive applications, system design, and software
+              architecture.
             </p>
             <p className="about__body">
               I enjoy collaborating with teams that value technical excellence, ownership, and
               building products that create meaningful impact.
             </p>
           </div>
-          <div ref={gridRef} className="about__right stagger-reveal">
+
+          <div ref={cardsRef} className="about__cards stagger-reveal">
             <div className="about__card">
-              <p className="about__card-label">FOCUS AREAS</p>
-              <ul className="about__focus-list">
-                <li>Backend architecture and API design</li>
-                <li>Distributed systems and microservices</li>
-                <li>Database design and performance optimization</li>
-                <li>Event-driven systems and asynchronous processing</li>
-                <li>Cloud infrastructure and containerized deployments</li>
-                <li>Reliability, resilience, and scalable software design</li>
+              <h3 className="about__card-title">Focus areas</h3>
+              <ul className="about__list">
+                {focusAreas.map((item) => <li key={item}>{item}</li>)}
               </ul>
             </div>
             <div className="about__card">
-              <p className="about__card-label">OPEN TO</p>
-              <ul className="about__focus-list">
-                <li>Backend Engineering</li>
-                <li>Software Engineering</li>
-                <li>Distributed Systems</li>
-                <li>Platform Engineering</li>
-                <li>Cloud &amp; Infrastructure Engineering</li>
+              <h3 className="about__card-title">Experience</h3>
+              <ul className="about__exp">
+                {experience.map((item) => (
+                  <li key={item.role}>
+                    <span className="about__exp-role">{item.role}</span>
+                    <span className="about__exp-meta">{item.company} • {item.year}</span>
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="about__card">
-              <p className="about__card-label">EXPERIENCE</p>
-              <ul className="about__exp-list">
-                <li>
-                  <span className="exp__role">Fullstack Developer</span>
-                  <span className="exp__company">Cloudit · 2025</span>
-                </li>
-                <li>
-                  <span className="exp__role">Backend Engineer</span>
-                  <span className="exp__company">Kyosk · 2025</span>
-                </li>
-                <li>
-                  <span className="exp__role">Freelance Developer</span>
-                  <span className="exp__company">Independent · 2023</span>
-                </li>
-              </ul>
+              <h3 className="about__card-title">Open to</h3>
+              <div className="about__chips">
+                {openTo.map((item) => <span key={item} className="chip">{item}</span>)}
+              </div>
             </div>
           </div>
         </div>
