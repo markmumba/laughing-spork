@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { getGitHubStats } from './server/github-stats.js'
-import { essaysSnapshot } from './server/essays-snapshot.js'
+import { routeHtml } from './server/route-html.js'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -19,7 +19,7 @@ export default defineConfig({
         }
       })
     },
-  }, essaysSnapshot()],
+  }, routeHtml()],
   build: {
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
