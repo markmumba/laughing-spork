@@ -86,13 +86,7 @@ const options = {
       )
       if (isCodeBlock) {
         const code = p.content?.map((c) => c.value).join('') || ''
-        return (
-          <div className="code-block-wrapper">
-            <pre>
-              <CodeBlock code={code} />
-            </pre>
-          </div>
-        )
+        return <CodeBlock code={code} />
       }
       return <p>{children}</p>
     },
@@ -108,13 +102,7 @@ const options = {
     [BLOCKS.QUOTE]: (_: Block | Inline, children: React.ReactNode) => (
       <blockquote>{children}</blockquote>
     ),
-    [BLOCKS.HR]: () => (
-      <div className="article-hr">
-        <span />
-        <span />
-        <span />
-      </div>
-    ),
+    [BLOCKS.HR]: () => <hr className="article-hr" />,
     [BLOCKS.TABLE]: (_: Block | Inline, children: React.ReactNode) => (
       <div className="article-table-wrap">
         <table>
