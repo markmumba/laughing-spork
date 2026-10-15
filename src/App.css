@@ -53,10 +53,6 @@
   /* Header */
   --nav-height: 64px;
 
-  /* Aliases the Wordmark reads, so it inherits the manuscript palette on the article page */
-  --ink-blue: var(--color-text);
-  --ink-muted: var(--color-text-3);
-  --accent-gold: var(--color-primary);
 }
 
 html { scroll-behavior: smooth; scroll-padding-top: var(--nav-height); }

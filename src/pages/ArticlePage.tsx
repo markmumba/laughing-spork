@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getEssayById, type EssayItem } from '../lib/contentful'
+import { getEssayById, getEssaysForHomepage, type EssayItem } from '../lib/contentful'
+import { contentfulSrcSet, optimizeContentfulImageUrl } from '../lib/contentful-image'
 import RichTextRenderer from '../lib/richtext'
-import Wordmark from '../components/Wordmark'
+import Nav from '../components/Nav'
+import Footer from '../components/Footer'
 import './ArticlePage.css'
 import { usePageMeta } from '../lib/usePageMeta'
 import type { Document } from '@contentful/rich-text-types'
@@ -44,9 +46,10 @@ function formatDate(raw: string): string {
   }
 }
 
+// Same formula as the essays index, so card and article agree on reading time
 function readTime(article: unknown): number {
   const text = richTextToPlain(article) || extractText(article)
-  return Math.max(1, Math.ceil(text.split(/\s+/).filter(Boolean).length / 200))
+  return Math.max(1, Math.round(text.split(/\s+/).filter(Boolean).length / 230))
 }
 
 // ─── Instagram Stories Card Generator ────────────────────────────────────────
@@ -175,21 +178,23 @@ async function generateStoriesCard(opts: {
   a.click()
 }
 
-// ─── Share Bar ────────────────────────────────────────────────────────────────
+// ─── Share rail ───────────────────────────────────────────────────────────────
 
-interface ShareBarProps {
+interface ShareProps {
   title: string
   author: string
   category: string
   blogImage: string
 }
 
-function ShareBar({ title, author, category, blogImage }: ShareBarProps) {
+// Vertical icon rail on desktop (right edge, like the Cloud blog); a row under the header on phones
+function ShareRail({ title, author, category, blogImage }: ShareProps) {
   const [copied, setCopied] = useState(false)
   const [generatingStory, setGeneratingStory] = useState(false)
+  const url = window.location.href
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
+    navigator.clipboard.writeText(url).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     })
@@ -198,68 +203,117 @@ function ShareBar({ title, author, category, blogImage }: ShareBarProps) {
   const handleStory = async () => {
     setGeneratingStory(true)
     try {
-      await generateStoriesCard({ title, author, category, blogImage, url: window.location.href })
+      await generateStoriesCard({ title, author, category, blogImage, url })
     } finally {
       setGeneratingStory(false)
     }
   }
 
-  const twitterUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(window.location.href)}`
-  const emailUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(window.location.href)}`
+  const links = [
+    {
+      label: 'Share on X',
+      href: `https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
+      icon: <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.734l7.733-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />,
+    },
+    {
+      label: 'Share on LinkedIn',
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      icon: <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8.34 17.34V10H5.9v7.34zM7.12 8.98a1.42 1.42 0 1 0 0-2.84 1.42 1.42 0 0 0 0 2.84m11.22 8.36v-4.02c0-2.15-1.15-3.15-2.68-3.15a2.32 2.32 0 0 0-2.1 1.16V10h-2.44c.03.69 0 7.34 0 7.34h2.44v-4.1c0-.22.02-.44.08-.6.18-.44.58-.9 1.26-.9.89 0 1.25.68 1.25 1.67v3.93z" />,
+    },
+    {
+      label: 'Share via email',
+      href: `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`,
+      icon: <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4-8 5-8-5V6l8 5 8-5z" />,
+    },
+  ]
 
   return (
-    <div className="share-bar">
-      <span className="share-bar__label">Share</span>
-      <div className="share-bar__actions">
-        {/* X / Twitter */}
-        <a href={twitterUrl} target="_blank" rel="noopener noreferrer" className="share-btn" aria-label="Share on X">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.734l7.733-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-          </svg>
-        </a>
-        {/* Email */}
-        <a href={emailUrl} className="share-btn" aria-label="Share via email">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2" y="4" width="20" height="16" rx="2"/>
-            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-          </svg>
-        </a>
-        {/* Copy link */}
-        <button onClick={handleCopy} className={`share-btn${copied ? ' share-btn--copied' : ''}`} aria-label="Copy link">
-          {copied ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-            </svg>
-          )}
-          <span className="share-btn__label">{copied ? 'Copied!' : 'Copy link'}</span>
-        </button>
-        {/* Instagram Story */}
-        <button
-          onClick={handleStory}
-          disabled={generatingStory}
-          className={`share-btn share-btn--story${generatingStory ? ' share-btn--generating' : ''}`}
-          aria-label="Download Instagram Story card"
+    <div className="share-rail" role="group" aria-label="Share this article">
+      {links.map((link) => (
+        <a
+          key={link.label}
+          href={link.href}
+          className="share-rail__btn"
+          aria-label={link.label}
+          title={link.label}
+          {...(link.href.startsWith('mailto:') ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
         >
-          {generatingStory ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="share-btn__spinner">
-              <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-            </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-            </svg>
-          )}
-          <span className="share-btn__label">{generatingStory ? 'Generating…' : 'Story'}</span>
-        </button>
-      </div>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{link.icon}</svg>
+        </a>
+      ))}
+      <button type="button" onClick={handleCopy} className="share-rail__btn" aria-label={copied ? 'Link copied' : 'Copy link'} title={copied ? 'Copied' : 'Copy link'}>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          {copied
+            ? <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+            : <path d="M3.9 12a3.1 3.1 0 0 1 3.1-3.1h4V7H7a5 5 0 0 0 0 10h4v-1.9H7A3.1 3.1 0 0 1 3.9 12M8 13h8v-2H8zm9-6h-4v1.9h4a3.1 3.1 0 0 1 0 6.2h-4V17h4a5 5 0 0 0 0-10" />}
+        </svg>
+      </button>
+      <button
+        type="button"
+        onClick={handleStory}
+        disabled={generatingStory}
+        className="share-rail__btn"
+        aria-label={generatingStory ? 'Generating Instagram Story card' : 'Download Instagram Story card'}
+        title="Instagram Story card"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={generatingStory ? 'share-rail__spin' : undefined}>
+          {generatingStory
+            ? <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            : <><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><path d="M17.5 6.5h.01" /></>}
+        </svg>
+      </button>
     </div>
+  )
+}
+
+// ─── Related essays ───────────────────────────────────────────────────────────
+
+function RelatedEssays({ currentId }: { currentId: string }) {
+  const [essays, setEssays] = useState<EssayItem[] | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    getEssaysForHomepage().then((items) => {
+      if (!cancelled) setEssays(items.filter((e) => e.id !== currentId).slice(0, 3))
+    })
+    return () => { cancelled = true }
+  }, [currentId])
+
+  if (!essays?.length) return null
+
+  return (
+    <section className="article-related" aria-labelledby="related-title">
+      <div className="article-related__inner">
+        <div className="section-head section-head--row">
+          <h2 id="related-title" className="section-head__title">More from Writing</h2>
+          <Link to="/essays" className="btn btn--text">All essays</Link>
+        </div>
+        <div className="article-related__grid">
+          {essays.map((e) => {
+            const img = e.blogImage
+            return (
+              <Link key={e.id} to={`/essays/${e.id}`} className="post-card">
+                <div className="post-card__img">
+                  {img && (
+                    <img
+                      src={optimizeContentfulImageUrl(img, { width: 600, quality: 60 })}
+                      srcSet={contentfulSrcSet(img, [400, 600, 800], 60)}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 410px"
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                </div>
+                <span className="chip">{extractText(e.category) || 'Essay'}</span>
+                <h3 className="post-card__title">{extractText(e.title)}</h3>
+                <p className="post-card__meta">{formatDate(extractText(e.publishDate as string))} • {readTime(e.article)}-minute read</p>
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -275,16 +329,6 @@ export default function ArticlePage() {
   const metaDesc = essay ? richTextToPlain(essay.article).slice(0, 160).trimEnd() : undefined
   usePageMeta({ title: metaTitle, description: metaDesc, image: essay?.blogImage || undefined })
 
-  // Manuscript fonts are scoped to this route; the rest of the site uses Google Sans
-  useEffect(() => {
-    const href = 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400..600&display=swap'
-    if (document.querySelector(`link[href="${href}"]`)) return
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = href
-    document.head.appendChild(link)
-  }, [])
-
   useEffect(() => {
     if (!id) return
     window.scrollTo(0, 0)
@@ -298,10 +342,8 @@ export default function ArticlePage() {
   if (loading) {
     return (
       <div className="article-page">
-        <ArticleNav title="" />
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '120px 0' }}>
-          <div className="essays-loading" />
-        </div>
+        <Nav page="essays" />
+        <div className="article-loading" role="status" aria-label="Loading article" />
       </div>
     )
   }
@@ -309,12 +351,13 @@ export default function ArticlePage() {
   if (!essay) {
     return (
       <div className="article-page">
-        <ArticleNav title="" />
-        <div className="articles-not-found">
-          <h1>Article not found.</h1>
-          <p>It may have been moved or doesn't exist.</p>
-          <Link to="/essays" className="cta-link">← All Writing</Link>
+        <Nav page="essays" />
+        <div className="article-missing">
+          <h1>Article not found</h1>
+          <p>It may have been moved, or it doesn't exist.</p>
+          <Link to="/essays" className="btn btn--filled">Browse all essays</Link>
         </div>
+        <Footer />
       </div>
     )
   }
@@ -324,110 +367,70 @@ export default function ArticlePage() {
   const date = extractText(essay.publishDate as string)
   const category = extractText(essay.category)
   const mins = readTime(essay.article)
-const nugget = extractText(essay.nugget)
+  const nugget = extractText(essay.nugget)
   const nuggetAuthor = extractText(essay.nuggetAuthor)
 
   return (
     <div className="article-page">
-      <ArticleNav title={title} />
+      <Nav page="essays" />
 
       <main>
         <article>
-          {/* ── Header ─────────────────────────────────── */}
+          {/* Centered header, as on the Cloud blog: tag, title, date, author */}
           <header className="article-header">
-            <div className="article-header__inner">
-              {/* Label row: category + date */}
-              <div className="article-header__label-row">
-                {category && <span className="article-header__category">{category}</span>}
-                {category && date && <span className="article-header__label-sep" aria-hidden="true" />}
-                {date && <span className="article-header__date">{formatDate(date)}</span>}
-              </div>
-
-              {/* Headline */}
-              <h1 className="article-header__title">{title}</h1>
-
-              {/* Byline */}
-              <p className="article-header__byline">
-                By {author}
-                <span className="article-header__byline-sep">·</span>
-                {mins} min read
-                {essay.tags && essay.tags.length > 0 && (
-                  <>
-                    <span className="article-header__byline-sep">·</span>
-                    <span className="article-header__tag-inline">{essay.tags[0]}</span>
-                  </>
-                )}
-              </p>
-
-              {/* Share */}
-              <ShareBar title={title} author={author} category={category} blogImage={essay.blogImage} />
+            {category && <span className="chip">{category}</span>}
+            <h1 className="article-header__title">{title}</h1>
+            {date && <p className="article-header__date">{formatDate(date)}</p>}
+            <div className="article-header__author">
+              <span className="article-header__author-name">{author}</span>
+              <span className="article-header__author-role">Software Engineer • {mins}-minute read</span>
             </div>
+            {essay.tags && essay.tags.length > 0 && (
+              <ul className="article-header__tags" aria-label="Topics">
+                {essay.tags.slice(0, 4).map((tag) => <li key={tag} className="chip">{tag}</li>)}
+              </ul>
+            )}
           </header>
 
-          {/* Hero image removed — let writing lead */}
+          <div className="article-layout">
+            {/* Left: sticky promo card, like the blog's "Try Gemini today" */}
+            <aside className="article-aside" aria-label="About the author">
+              <div className="article-aside__card">
+                <p className="article-aside__title">Work with me</p>
+                <p className="article-aside__text">Backend and fullstack engineer in Nairobi, open to remote roles.</p>
+                <a href="/#contact" className="btn btn--filled">Get in touch</a>
+              </div>
+            </aside>
 
-          {/* ── Body ───────────────────────────────────── */}
-          <div className="article-body-wrap">
-            <div className="article-body">
-              <RichTextRenderer content={essay.article as Document} />
+            <div className="article-content">
+              <div className="article-body">
+                <RichTextRenderer content={essay.article as Document} />
+              </div>
+
+              {nugget && (
+                <aside className="nugget">
+                  <p className="nugget__label">Nugget of wisdom</p>
+                  <p className="nugget__quote">{nugget}</p>
+                  {nuggetAuthor && <cite className="nugget__cite">{nuggetAuthor}</cite>}
+                </aside>
+              )}
+
+              <div className="article-end">
+                <span>Thanks for reading.</span>
+                <Link to="/essays" className="btn btn--outlined">All essays</Link>
+              </div>
             </div>
 
-            {/* Wisdom Nugget */}
-            {nugget && (
-              <aside className="nugget">
-                <p className="nugget__label">NUGGET OF WISDOM</p>
-                <p className="nugget__quote">{nugget}</p>
-                {nuggetAuthor && <cite className="nugget__cite">— {nuggetAuthor}</cite>}
-              </aside>
-            )}
-
-            {/* Article Footer */}
-            <footer className="article-footer">
-              <Link to="/essays">← All Writing</Link>
-              <Link to="/">Home →</Link>
-            </footer>
+            <div className="article-share">
+              <ShareRail title={title} author={author} category={category} blogImage={essay.blogImage} />
+            </div>
           </div>
         </article>
+
+        {id && <RelatedEssays currentId={id} />}
       </main>
 
-      {/* Site Footer */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer__inner">
-            <p className="footer__copy">© 2026 Markian Mumba Mwangi. All rights reserved.</p>
-            <div className="footer__links">
-              <Link to="/">Home</Link>
-              <a href="https://github.com/markmumba" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a href="mailto:mumbamarkian@gmail.com">Email</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
-  )
-}
-
-// ─── Sticky Nav ───────────────────────────────────────────────────────────────
-
-function ArticleNav({ title }: { title: string }) {
-  const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 280)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  return (
-    <nav className="article-nav">
-      <div className="article-nav__inner">
-        <Link to="/essays" className="article-nav__back">← Writing</Link>
-        {scrolled && title ? (
-          <span className="article-nav__scrolled-title">{title}</span>
-        ) : (
-          <Link to="/" className="article-nav__home"><Wordmark /></Link>
-        )}
-      </div>
-    </nav>
   )
 }
