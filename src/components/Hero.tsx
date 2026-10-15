@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getEssaysForHomepage, type EssayItem } from '../lib/contentful'
 import { contentfulSrcSet, optimizeContentfulImageUrl } from '../lib/contentful-image'
@@ -152,13 +152,18 @@ export default function Hero() {
     track.scrollTo({ left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2, behavior })
   }
 
-  // Land on the starting card without animating, and re-center after resizes
-  useEffect(() => {
-    centerCard(index, 'instant')
-    const onResize = () => centerCard(index, 'instant')
+  // Latest index for the resize handler, which is registered once
+  const indexRef = useRef(index)
+  useEffect(() => { indexRef.current = index }, [index])
+
+  // Position the track before the first paint. Otherwise the first frame shows card 0 (the
+  // latest essay, whose image waits on the Contentful API) centered and it becomes the LCP;
+  // landing on card 1 first makes the local FolioCuts screenshot the LCP instead.
+  useLayoutEffect(() => {
+    centerCard(indexRef.current, 'instant')
+    const onResize = () => centerCard(indexRef.current, 'instant')
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Gentle autoplay: pauses on hover/focus, when off screen, and for reduced-motion users
@@ -235,7 +240,7 @@ export default function Hero() {
           aria-roledescription="carousel"
           aria-label="Highlights"
         >
-          {cards.map((card, i) => <StoryCardLink key={card.key} card={card} priority={i <= 1} />)}
+          {cards.map((card, i) => <StoryCardLink key={card.key} card={card} priority={i === 1} />)}
         </div>
         <div className="hero__controls">
           <button type="button" className="icon-btn" onClick={() => go(index - 1)} aria-label="Previous highlight">

@@ -1,7 +1,7 @@
 {
   "rewrites": [
     { "source": "/essays", "destination": "/essays/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/app.html" }
   ],
   "functions": { "api/github-stats.ts": { "maxDuration": 30 } }
 }

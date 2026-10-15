@@ -57,7 +57,7 @@ function getExcerpt(essay: EssayItem, chars = 200): string {
   return text.length > chars ? text.slice(0, chars).trimEnd() + '…' : text
 }
 
-// Essay list baked into /essays/index.html at build time (see server/essays-snapshot.ts).
+// Essay list baked into /essays/index.html at build time (see server/route-html.ts).
 // Absent when the page is reached by client-side navigation or in dev.
 function readSnapshot(): EssayItem[] | null {
   const el = document.getElementById('essays-snapshot')
