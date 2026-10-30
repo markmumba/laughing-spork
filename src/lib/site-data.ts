@@ -2,6 +2,16 @@
 
 export const projects = [
   {
+    id: 6,
+    name: 'CollectKE',
+    image: '/projects/collectke.webp',
+    category: 'SaaS',
+    description: 'Invoice-to-cash workspace for Kenyan businesses. Quotations, LPOs, delivery notes and invoices in one connected record, with reviewable payment follow-ups and M-Pesa reconciliation.',
+    tags: ['Next.js', 'TypeScript', 'Tailwind CSS', 'M-Pesa'],
+    github: 'https://github.com/markmumba/collectke',
+    demo: 'https://collectke.markian.fit/',
+  },
+  {
     id: 1,
     name: 'FolioCuts',
     image: '/projects/foliocuts.webp',
