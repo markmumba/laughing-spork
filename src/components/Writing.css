@@ -1,16 +1,68 @@
-.writing-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 48px 32px;
+.note-strip { list-style: none; }
+
+.note { width: 262px; }
+
+.note__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
 }
 
-@media (max-width: 1000px) {
-  .writing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .writing-grid > .post-card:nth-child(3) { display: none; }
+/* A small page of the essay, faded out at the bottom */
+.note__page {
+  aspect-ratio: 4 / 5;
+  padding: 22px 20px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 96%);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 96%);
+  transition: background-color var(--duration-medium) var(--ease-standard);
 }
 
-@media (max-width: 640px) {
-  .writing-grid { grid-template-columns: 1fr; gap: 40px; }
-  .writing-grid > .post-card:nth-child(3) { display: flex; }
+.note__link:hover .note__page { background: var(--color-surface-2); }
+
+.note__page-title {
+  font-size: 15px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
+.note__page-date {
+  margin: 4px 0 14px;
+  font-size: 11px;
+  color: var(--color-text-3);
+}
+
+.note__page-text {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--color-text-2);
+}
+
+.note__page--all {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2px;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.note__caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.note__title {
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note__date { flex: none; color: var(--color-text-3); }

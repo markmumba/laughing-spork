@@ -265,7 +265,7 @@ export default function EssaysPage() {
 
   return (
     <div className="essays-page">
-      <Nav page="essays" />
+      <Nav />
 
       <main>
         {!loading && essays.length ? (

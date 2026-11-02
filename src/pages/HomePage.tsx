@@ -1,10 +1,8 @@
 import Nav from '../components/Nav'
-import Hero from '../components/Hero'
-import Writing from '../components/Writing'
 import About from '../components/About'
-import Skills from '../components/Skills'
 import Projects from '../components/Projects'
-import GitHubActivity from '../components/GitHubActivity'
+import Experience from '../components/Experience'
+import Writing from '../components/Writing'
 import Contact from '../components/Contact'
 import Footer from '../components/Footer'
 
@@ -12,13 +10,11 @@ export default function HomePage() {
   return (
     <>
       <Nav />
-      <main>
-        <Hero />
-        <Writing />
+      <main className="page">
         <About />
-        <Skills />
         <Projects />
-        <GitHubActivity />
+        <Experience />
+        <Writing />
         <Contact />
       </main>
       <Footer />
