@@ -187,7 +187,7 @@ interface ShareProps {
   blogImage: string
 }
 
-// Vertical icon rail on desktop (right edge, like the Cloud blog); a row under the header on phones
+// Row of quiet icon buttons at the end of the article
 function ShareRail({ title, author, category, blogImage }: ShareProps) {
   const [copied, setCopied] = useState(false)
   const [generatingStory, setGeneratingStory] = useState(false)
@@ -268,13 +268,20 @@ function ShareRail({ title, author, category, blogImage }: ShareProps) {
 
 // ─── Related essays ───────────────────────────────────────────────────────────
 
+// "02/2026", as dates read in lists
+function monthSlashYear(raw: string): string {
+  const date = new Date(raw)
+  if (Number.isNaN(date.getTime())) return ''
+  return `${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`
+}
+
 function RelatedEssays({ currentId }: { currentId: string }) {
   const [essays, setEssays] = useState<EssayItem[] | null>(null)
 
   useEffect(() => {
     let cancelled = false
     getEssaysForHomepage().then((items) => {
-      if (!cancelled) setEssays(items.filter((e) => e.id !== currentId).slice(0, 3))
+      if (!cancelled) setEssays(items.filter((e) => e.id !== currentId).slice(0, 4))
     })
     return () => { cancelled = true }
   }, [currentId])
@@ -282,37 +289,21 @@ function RelatedEssays({ currentId }: { currentId: string }) {
   if (!essays?.length) return null
 
   return (
-    <section className="article-related" aria-labelledby="related-title">
-      <div className="article-related__inner">
-        <div className="section-head section-head--row">
-          <h2 id="related-title" className="section-head__title">More from Writing</h2>
-          <Link to="/essays" className="btn btn--text">All essays</Link>
-        </div>
-        <div className="article-related__grid">
-          {essays.map((e) => {
-            const img = e.blogImage
-            return (
-              <Link key={e.id} to={`/essays/${e.id}`} className="post-card">
-                <div className="post-card__img">
-                  {img && (
-                    <img
-                      src={optimizeContentfulImageUrl(img, { width: 600, quality: 60 })}
-                      srcSet={contentfulSrcSet(img, [400, 600, 800], 60)}
-                      sizes="(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 410px"
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  )}
-                </div>
-                <span className="chip">{extractText(e.category) || 'Essay'}</span>
-                <h3 className="post-card__title">{extractText(e.title)}</h3>
-                <p className="post-card__meta">{formatDate(extractText(e.publishDate as string))} • {readTime(e.article)}-minute read</p>
-              </Link>
-            )
-          })}
-        </div>
+    <section className="block article-related" aria-labelledby="related-title">
+      <div className="label-row">
+        <h2 id="related-title" className="label">More writing</h2>
+        <Link to="/essays" className="article-related__all">All essays</Link>
       </div>
+      <ul className="article-related__list">
+        {essays.map((e) => (
+          <li key={e.id}>
+            <Link to={`/essays/${e.id}`} className="article-related__row">
+              <span className="article-related__title">{extractText(e.title)}</span>
+              <span className="article-related__date">{monthSlashYear(extractText(e.publishDate as string))}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }
@@ -342,7 +333,7 @@ export default function ArticlePage() {
   if (loading) {
     return (
       <div className="article-page">
-        <Nav page="essays" />
+        <Nav />
         <div className="article-loading" role="status" aria-label="Loading article" />
       </div>
     )
@@ -351,12 +342,12 @@ export default function ArticlePage() {
   if (!essay) {
     return (
       <div className="article-page">
-        <Nav page="essays" />
-        <div className="article-missing">
-          <h1>Article not found</h1>
-          <p>It may have been moved, or it doesn't exist.</p>
-          <Link to="/essays" className="btn btn--filled">Browse all essays</Link>
-        </div>
+        <Nav />
+        <main className="page article-missing">
+          <h1 className="statement">Article not found</h1>
+          <p className="muted">It may have been moved, or it doesn't exist.</p>
+          <Link to="/essays" className="text-link">Browse all essays</Link>
+        </main>
         <Footer />
       </div>
     )
@@ -369,62 +360,49 @@ export default function ArticlePage() {
   const mins = readTime(essay.article)
   const nugget = extractText(essay.nugget)
   const nuggetAuthor = extractText(essay.nuggetAuthor)
+  const meta = [date && formatDate(date), `${mins} min read`, category].filter(Boolean).join(' · ')
 
   return (
     <div className="article-page">
-      <Nav page="essays" />
+      <Nav />
 
-      <main>
-        <article>
-          {/* Centered header, as on the Cloud blog: tag, title, date, author */}
-          <header className="article-header">
-            {category && <span className="chip">{category}</span>}
-            <h1 className="article-header__title">{title}</h1>
-            {date && <p className="article-header__date">{formatDate(date)}</p>}
-            <div className="article-header__author">
-              <span className="article-header__author-name">{author}</span>
-              <span className="article-header__author-role">Software Engineer • {mins}-minute read</span>
-            </div>
-            {essay.tags && essay.tags.length > 0 && (
-              <ul className="article-header__tags" aria-label="Topics">
-                {essay.tags.slice(0, 4).map((tag) => <li key={tag} className="chip">{tag}</li>)}
-              </ul>
-            )}
+      <main className="page">
+        {/* A plain document: title, one grey meta line, the cover, then the text */}
+        <article className="doc">
+          <header className="doc__header">
+            <h1 className="doc__title">{title}</h1>
+            <p className="doc__meta">{meta}</p>
           </header>
 
-          <div className="article-layout">
-            {/* Left: sticky promo card, like the blog's "Try Gemini today" */}
-            <aside className="article-aside" aria-label="About the author">
-              <div className="article-aside__card">
-                <p className="article-aside__title">Work with me</p>
-                <p className="article-aside__text">Backend and fullstack engineer in Nairobi, open to remote roles.</p>
-                <a href="/#contact" className="btn btn--filled">Get in touch</a>
-              </div>
-            </aside>
+          {essay.blogImage && (
+            <figure className="doc__cover">
+              <img
+                src={optimizeContentfulImageUrl(essay.blogImage, { width: 1080, quality: 70 })}
+                srcSet={contentfulSrcSet(essay.blogImage, [540, 1080, 1620], 70)}
+                sizes="(max-width: 588px) calc(100vw - 40px), 540px"
+                alt=""
+                fetchPriority="high"
+                decoding="async"
+              />
+            </figure>
+          )}
 
-            <div className="article-content">
-              <div className="article-body">
-                <RichTextRenderer content={essay.article as Document} />
-              </div>
-
-              {nugget && (
-                <aside className="nugget">
-                  <p className="nugget__label">Nugget of wisdom</p>
-                  <p className="nugget__quote">{nugget}</p>
-                  {nuggetAuthor && <cite className="nugget__cite">{nuggetAuthor}</cite>}
-                </aside>
-              )}
-
-              <div className="article-end">
-                <span>Thanks for reading.</span>
-                <Link to="/essays" className="btn btn--outlined">All essays</Link>
-              </div>
-            </div>
-
-            <div className="article-share">
-              <ShareRail title={title} author={author} category={category} blogImage={essay.blogImage} />
-            </div>
+          <div className="article-body">
+            <RichTextRenderer content={essay.article as Document} />
           </div>
+
+          {nugget && (
+            <aside className="nugget">
+              <p className="nugget__label">Nugget of wisdom</p>
+              <p className="nugget__quote">{nugget}</p>
+              {nuggetAuthor && <cite className="nugget__cite">{nuggetAuthor}</cite>}
+            </aside>
+          )}
+
+          <footer className="doc__end">
+            <span className="muted">Share</span>
+            <ShareRail title={title} author={author} category={category} blogImage={essay.blogImage} />
+          </footer>
         </article>
 
         {id && <RelatedEssays currentId={id} />}

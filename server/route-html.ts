@@ -7,12 +7,9 @@ import { contentfulSrcSet, optimizeContentfulImageUrl } from '../src/lib/content
 //
 // Every route used to share dist/index.html. This plugin splits it into:
 //   - dist/app.html          untouched shell, the SPA fallback for every other route
-//   - dist/index.html        homepage: preloads the hero's first visible card image
+//   - dist/index.html        homepage: also the untouched shell (its first paint is text only)
 //   - dist/essays/index.html essays index: essay list snapshot + featured image preload
 // vercel.json routes /essays and the catch-all explicitly; "/" is served from index.html.
-//
-// Homepage: the hero image is created by React, so without a preload the browser only finds
-// it after the JS chain runs (about 2.4s of the 5.1s LCP on the live site).
 //
 // Essays: the SPA can only learn which image is the featured essay after the Contentful API answers,
 // so that image (the page's LCP) starts late. This plugin fetches the essay list during the
@@ -22,9 +19,6 @@ import { contentfulSrcSet, optimizeContentfulImageUrl } from '../src/lib/content
 // Vercel serves real files before applying the catch-all rewrite, so /essays gets this file.
 // The page still refetches from Contentful after rendering, so posts published since the last
 // build appear too.
-
-// Must match the card centered on first paint in src/components/Hero.tsx (cards[1])
-const HOME_HERO_IMAGE = '/projects/foliocuts.webp'
 
 // Must match the first fly-through card in src/pages/EssaysPage.tsx, or the preload is wasted
 const FEATURED_IMAGE = { width: 600, quality: 70, srcSetWidths: [400, 600, 800], srcSetQuality: 60, sizes: '300px' }
@@ -134,17 +128,14 @@ export function routeHtml(): Plugin {
     configResolved(resolved) {
       config = resolved
     },
-    // One hook does all three files in order: closeBundle hooks of separate plugins run in parallel
+    // One hook does both files in order: closeBundle hooks of separate plugins run in parallel
     async closeBundle() {
       const outDir = path.resolve(config.root, config.build.outDir)
       const shell = await readFile(path.join(outDir, 'index.html'), 'utf8')
 
       await writeFile(path.join(outDir, 'app.html'), shell)
       await writeEssaysShell(config, outDir, shell)
-
-      const home = shell.replace('</head>', `  <link rel="preload" as="image" fetchpriority="high" href="${HOME_HERO_IMAGE}" />\n  </head>`)
-      await writeFile(path.join(outDir, 'index.html'), home)
-      config.logger.info('[route-html] Wrote app.html and the homepage preload.')
+      config.logger.info('[route-html] Wrote app.html.')
     },
   }
 }

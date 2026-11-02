@@ -1,122 +1,65 @@
-/* ─── Featured project: text left, rounded image right ─── */
+.project-strip { list-style: none; }
 
-.project-feature {
+.project { width: var(--col); }
+
+/* Grey mat with the screenshot inset, like a print in a frame */
+.project__frame {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  align-items: center;
-  gap: 64px;
-  margin-bottom: 72px;
-}
-
-.project-feature__name {
-  margin: 20px 0 16px;
-  font-size: clamp(2rem, 1.5rem + 1.6vw, 2.75rem);
-  font-weight: 400;
-  line-height: 1.18;
-  color: var(--color-text);
-}
-
-.project-feature__description {
-  font-size: 18px;
-  line-height: 1.6;
-  color: var(--color-text-3);
-}
-
-.project-feature__media {
-  display: block;
+  place-items: center;
   aspect-ratio: 16 / 10;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card-lg);
-  overflow: hidden;
-  background: var(--color-surface-2);
-}
-
-.project-feature__media img,
-.project-card__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-  display: block;
-  transition: transform 600ms var(--ease-emphasized);
-}
-
-.project-feature__media:hover img,
-.project-card:hover .project-card__media img { transform: scale(1.03); }
-
-.project-tags {
-  margin-top: 16px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-2);
-}
-
-.project-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 28px;
-}
-
-/* ─── Remaining projects ─── */
-
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 32px;
-}
-
-.project-card {
-  display: flex;
-  flex-direction: column;
-  border-radius: var(--radius-card-lg);
+  padding: 28px;
+  border-radius: var(--radius-card);
   background: var(--color-surface);
   overflow: hidden;
 }
 
-.project-card__media {
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: var(--color-surface-2);
+.project__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 600ms var(--ease-emphasized);
 }
 
-.project-card__body {
+.project__frame:hover img { transform: scale(1.02); }
+
+.project__caption {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  flex: 1;
-  padding: 32px;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
 }
 
-.project-card__name {
-  margin: 16px 0 10px;
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 1.25;
-  color: var(--color-text);
-}
+.project__name { color: var(--color-text); text-decoration: none; }
+.project__name:hover { text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
 
-.project-card__description {
-  font-size: 16px;
-  line-height: 1.6;
+.project__code {
   color: var(--color-text-3);
+  text-decoration: none;
+  transition: color var(--duration-short) var(--ease-standard);
 }
 
-.project-card .project-links { margin-top: auto; padding-top: 20px; gap: 4px; margin-left: -12px; }
+.project__code:hover { color: var(--color-text); }
 
-@media (max-width: 900px) {
-  .project-feature { grid-template-columns: 1fr; gap: 32px; }
-  .project-feature__media { order: -1; }
-  .project-grid { grid-template-columns: 1fr; gap: 24px; }
+.project__about {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-3);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-@media (max-width: 480px) {
-  .project-card__body { padding: 24px; }
-  .project-feature__media, .project-card { border-radius: var(--radius-card); }
-  .project-links .btn--filled, .project-links .btn--outlined { flex: 1 1 140px; }
+@media (max-width: 640px) {
+  .project { width: calc(100vw - var(--gutter) * 2 - 24px); }
+  .project__frame { padding: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .project-feature__media:hover img,
-  .project-card:hover .project-card__media img { transform: none; }
+  .project__frame:hover img { transform: none; }
 }
