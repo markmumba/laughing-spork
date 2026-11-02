@@ -26,8 +26,8 @@ import { contentfulSrcSet, optimizeContentfulImageUrl } from '../src/lib/content
 // Must match the card centered on first paint in src/components/Hero.tsx (cards[1])
 const HOME_HERO_IMAGE = '/projects/foliocuts.webp'
 
-// Must match the featured image in src/pages/EssaysPage.tsx, or the preload is wasted
-const FEATURED_IMAGE = { width: 800, quality: 70, srcSetWidths: [500, 800, 1000], srcSetQuality: 60, sizes: '(max-width: 900px) 100vw, 610px' }
+// Must match the first fly-through card in src/pages/EssaysPage.tsx, or the preload is wasted
+const FEATURED_IMAGE = { width: 600, quality: 70, srcSetWidths: [400, 600, 800], srcSetQuality: 60, sizes: '300px' }
 const EXCERPT_CHARS = 400
 
 type Link = { sys: { id: string } }
