@@ -1,0 +1,25 @@
+/* Sits behind the page in the empty left margin; it never takes clicks */
+.pencil-margin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.pencil-margin path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Graphite: the line lighter than the writing */
+.pencil-margin__line { stroke: #b4b4b4; stroke-width: 1.1; }
+.pencil-margin__note path { stroke: #7a7a7a; stroke-width: 1.05; visibility: hidden; }
+.pencil-margin__note path.is-author { stroke: #a6a6a6; }
+
+.pencil-margin__tip {
+  fill: #3a3a3a;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-standard);
+}

@@ -106,6 +106,43 @@ export async function getEssaysForHomepage(): Promise<EssayItem[]> {
   }
 }
 
+export interface EssayNugget {
+  quote: string
+  author: string
+}
+
+// Every essay's "Nugget of wisdom" and its author, and nothing else, for the margin notes
+export async function getEssayNuggets(): Promise<EssayNugget[]> {
+  try {
+    const response = await client.getEntries({
+      content_type: 'articles',
+      select: ['fields.nugget', 'fields.nuggetAuthor'],
+      limit: 100,
+    } as Parameters<typeof client.getEntries>[0])
+    return response.items
+      .map((item) => ({ quote: String(item.fields.nugget ?? '').trim(), author: String(item.fields.nuggetAuthor ?? '').trim() }))
+      .filter((n) => n.quote)
+  } catch (error) {
+    console.error('Error fetching essay nuggets:', error)
+    return []
+  }
+}
+
+// How many essays are published, without fetching any of them
+export async function getEssayCount(): Promise<number> {
+  try {
+    const response = await client.getEntries({
+      content_type: 'articles',
+      select: ['sys.id'],
+      limit: 1,
+    } as Parameters<typeof client.getEntries>[0])
+    return response.total
+  } catch (error) {
+    console.error('Error counting essays:', error)
+    return 0
+  }
+}
+
 export async function getEssayById(id: string): Promise<EssayItem | null> {
   try {
     const response = await client.getEntries({

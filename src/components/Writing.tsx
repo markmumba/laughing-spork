@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { getEssaysForHomepage, type EssayItem } from '../lib/contentful'
+import { getEssayCount, getEssaysForHomepage, type EssayItem } from '../lib/contentful'
 import Stepper from './Stepper'
 import './Writing.css'
 
@@ -55,10 +55,9 @@ export default function Writing() {
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
-    getEssaysForHomepage().then((items) => {
-      setTotal(items.length)
-      setEssays(items.slice(0, SHOWN))
-    })
+    getEssaysForHomepage().then((items) => setEssays(items.slice(0, SHOWN)))
+    // The homepage fetch is capped, so the real total comes from a separate count
+    getEssayCount().then(setTotal)
   }, [])
 
   return (
@@ -93,7 +92,7 @@ export default function Writing() {
           <li className="note">
             <RouterLink to="/essays" className="note__link">
               <div className="note__page note__page--all">
-                <span>All {total} essays</span>
+                <span>{total ? `All ${total} essays` : 'All essays'}</span>
                 <span className="muted">Fly through them →</span>
               </div>
             </RouterLink>
