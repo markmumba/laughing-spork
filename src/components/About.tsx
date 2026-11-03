@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { GitHubStats } from '../lib/github-stats.types'
+import Peek, { FlightPreview, ScrollPreview } from './Peek'
 import './About.css'
 
 function monthYear(value: string): string {
@@ -27,7 +28,7 @@ export default function About() {
       <section className="block about-intro" aria-label="About">
         <p className="statement">
           I’m a software engineer in Nairobi. I build backend systems that are reliable,
-          maintainable and built to scale, and I <Link to="/essays" className="text-link">write</Link> about
+          maintainable and built to scale, and I <Peek preview={() => <FlightPreview />}><Link to="/essays" className="text-link">write</Link></Peek> about
           what I learn along the way.
         </p>
       </section>
@@ -36,7 +37,9 @@ export default function About() {
         <h2 id="now-title" className="label">Now</h2>
         <p>
           These days I’m a fullstack developer at Cloudit, and building{' '}
-          <a href="https://collectke.markian.fit/" target="_blank" rel="noopener noreferrer" className="text-link">CollectKE</a>,
+          <Peek preview={() => <ScrollPreview src="/previews/collectke-scroll.webp" />}>
+            <a href="https://collectke.markian.fit/" target="_blank" rel="noopener noreferrer" className="text-link">CollectKE</a>
+          </Peek>,
           an invoice-to-cash workspace for Kenyan businesses.
         </p>
         {stats && (

@@ -1,19 +1,51 @@
-.project-strip { list-style: none; }
+/* Full-width stage centred on the column; frames are positioned from its middle */
+.project-stage {
+  --slide-w: min(var(--col), calc(100vw - var(--gutter) * 2 - 48px));
+  position: relative;
+  width: 100vw;
+  height: calc(var(--slide-w) * 0.625 + 44px);
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+}
 
-.project { width: var(--col); }
+.project-stage.is-dragging { cursor: grabbing; }
+.project-stage:focus-visible { outline: none; }
+.project-stage:focus-visible .project.is-active .project__frame { outline: 2px solid var(--color-text); outline-offset: 4px; }
+
+.project {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--slide-w);
+  /* Scale around the frame's centre, so smaller neighbours stay vertically centred on it */
+  transform-origin: 50% calc(var(--slide-w) * 0.3125);
+  transition: transform 600ms var(--ease-emphasized);
+}
+
+.project-stage.is-dragging .project { transition: none; }
 
 /* Grey mat with the screenshot inset, like a print in a frame */
 .project__frame {
   display: grid;
   place-items: center;
+  width: 100%;
   aspect-ratio: 16 / 10;
   padding: 28px;
+  border: 0;
   border-radius: var(--radius-card);
   background: var(--color-surface);
   overflow: hidden;
+  cursor: inherit;
 }
 
-.project__frame img {
+.project.is-active .project__frame { cursor: pointer; }
+.project-stage.is-dragging .project__frame { cursor: grabbing; }
+
+.project__frame img,
+.project__frame video {
   display: block;
   width: 100%;
   height: 100%;
@@ -21,45 +53,37 @@
   object-position: top;
   border-radius: 6px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08);
-  transition: transform 600ms var(--ease-emphasized);
+  pointer-events: none;
 }
 
-.project__frame:hover img { transform: scale(1.02); }
-
+/* Only the active project is captioned */
 .project__caption {
   display: flex;
   justify-content: space-between;
   gap: 16px;
   margin-top: 12px;
+  opacity: 0;
+  transition: opacity 250ms var(--ease-standard);
 }
 
+.project.is-active .project__caption { opacity: 1; transition-delay: 250ms; }
+
 .project__name { color: var(--color-text); text-decoration: none; }
-.project__name:hover { text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+.project__meta { color: var(--color-text-3); }
 
 .project__code {
-  color: var(--color-text-3);
+  color: inherit;
   text-decoration: none;
   transition: color var(--duration-short) var(--ease-standard);
 }
 
 .project__code:hover { color: var(--color-text); }
 
-.project__about {
-  margin-top: 4px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--color-text-3);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 @media (max-width: 640px) {
-  .project { width: calc(100vw - var(--gutter) * 2 - 24px); }
   .project__frame { padding: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .project__frame:hover img { transform: none; }
+  .project,
+  .project__caption { transition-duration: 1ms; transition-delay: 0ms; }
 }

@@ -43,15 +43,7 @@
 
 .resume-entry__role { font-size: 16px; font-weight: 400; }
 
-.resume-entry__role a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
-  text-decoration-color: var(--color-border-strong);
-}
-
-.resume-entry__role a:hover { text-decoration-color: currentColor; }
+/* Project links use the shared pencil squiggle (App.css) */
 
 .resume-entry__org { color: var(--color-text-3); }
 

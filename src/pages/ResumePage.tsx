@@ -74,7 +74,7 @@ const education = [
 ]
 
 const skills: Record<string, string[]> = {
-  Languages: ['Java', 'JavaScript', 'TypeScript', 'Python'],
+  Languages: ['Java', 'Go', 'JavaScript', 'TypeScript', 'Python'],
   Frameworks: ['Spring Boot', 'Next.js', 'React', 'Tailwind CSS'],
   Databases: ['PostgreSQL', 'MongoDB'],
   Tools: ['Docker', 'Git', 'GitLab CI/CD', 'Azure', 'GCP', 'Nginx', 'Linux'],

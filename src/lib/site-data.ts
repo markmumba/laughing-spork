@@ -1,10 +1,13 @@
 // Portfolio content shared by the homepage sections and the header's Explore menu.
 
-export const projects = [
+// `video` is a short scroll-through of the live site (see public/projects/video);
+// projects without one, like sites that are offline, show the still image instead.
+export const projects: { id: number; name: string; image: string; video?: string; category: string; description: string; tags: string[]; github: string; demo: string }[] = [
   {
     id: 6,
     name: 'CollectKE',
     image: '/projects/collectke.webp',
+    video: '/projects/video/collectke.mp4',
     category: 'SaaS',
     description: 'Invoice-to-cash workspace for Kenyan businesses. Quotations, LPOs, delivery notes and invoices in one connected record, with reviewable payment follow-ups and M-Pesa reconciliation.',
     tags: ['Next.js', 'TypeScript', 'Tailwind CSS', 'M-Pesa'],
@@ -15,6 +18,7 @@ export const projects = [
     id: 1,
     name: 'FolioCuts',
     image: '/projects/foliocuts.webp',
+    video: '/projects/video/foliocuts.mp4',
     category: 'Platform',
     description: 'Digital barbershop management for Kenyan shops. Commission tracking, M-Pesa STK push, automated receipts, loyalty rewards, live analytics, staff dashboards. 3-minute onboarding.',
     tags: ['Spring Boot', 'Next.js', 'M-Pesa', 'PostgreSQL'],
@@ -35,6 +39,7 @@ export const projects = [
     id: 3,
     name: 'Rentitup',
     image: '/projects/rentitup.webp',
+    video: '/projects/video/rentitup.mp4',
     category: 'Marketplace',
     description: 'Rental platform connecting machinery owners with users — from contractors to homeowners.',
     tags: ['Next.js', 'Spring Boot'],
@@ -45,6 +50,7 @@ export const projects = [
     id: 4,
     name: 'Agamemnon',
     image: '/projects/agamemnon.webp',
+    video: '/projects/video/agamemnon.mp4',
     category: 'Cinematic',
     description: 'Cinematic tribute site for the High King of Mycenae. Immersive visual storytelling with dramatic typography and atmospheric design.',
     tags: ['Next.js', 'CSS'],
@@ -82,6 +88,7 @@ export const technologies: { name: string; group: TechnologyGroupId; note: strin
   { name: 'Java', group: 'languages', note: 'Primary language for backend services' },
   { name: 'TypeScript', group: 'languages', note: 'Typed frontends and tooling' },
   { name: 'JavaScript', group: 'languages', note: 'The web, everywhere' },
+  { name: 'Go', group: 'languages', note: 'Lean services and command-line tools' },
   { name: 'Python', group: 'languages', note: 'Scripts, automation and data work' },
   { name: 'Spring Boot', group: 'backend', note: 'REST APIs and microservices' },
   { name: 'gRPC', group: 'backend', note: 'Fast, typed service-to-service contracts' },
