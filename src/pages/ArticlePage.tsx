@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getEssayById, getEssaysForHomepage, type EssayItem } from '../lib/contentful'
-import { contentfulSrcSet, optimizeContentfulImageUrl } from '../lib/contentful-image'
 import RichTextRenderer from '../lib/richtext'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
@@ -298,7 +297,7 @@ function RelatedEssays({ currentId }: { currentId: string }) {
         {essays.map((e) => (
           <li key={e.id}>
             <Link to={`/essays/${e.id}`} className="article-related__row">
-              <span className="article-related__title">{extractText(e.title)}</span>
+              <span className="article-related__title squiggle-on-hover">{extractText(e.title)}</span>
               <span className="article-related__date">{monthSlashYear(extractText(e.publishDate as string))}</span>
             </Link>
           </li>
@@ -367,25 +366,12 @@ export default function ArticlePage() {
       <Nav />
 
       <main className="page">
-        {/* A plain document: title, one grey meta line, the cover, then the text */}
+        {/* A plain document: title, one grey meta line, then the text */}
         <article className="doc">
           <header className="doc__header">
             <h1 className="doc__title">{title}</h1>
             <p className="doc__meta">{meta}</p>
           </header>
-
-          {essay.blogImage && (
-            <figure className="doc__cover">
-              <img
-                src={optimizeContentfulImageUrl(essay.blogImage, { width: 1080, quality: 70 })}
-                srcSet={contentfulSrcSet(essay.blogImage, [540, 1080, 1620], 70)}
-                sizes="(max-width: 588px) calc(100vw - 40px), 540px"
-                alt=""
-                fetchPriority="high"
-                decoding="async"
-              />
-            </figure>
-          )}
 
           <div className="article-body">
             <RichTextRenderer content={essay.article as Document} />

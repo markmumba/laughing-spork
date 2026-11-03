@@ -21,16 +21,6 @@
   color: var(--color-text-3);
 }
 
-.doc__cover { margin-top: 48px; }
-
-.doc__cover img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-card);
-  background: var(--color-surface);
-}
-
 /* ─── Body: plain paragraphs, one size, generous rhythm ─── */
 
 .article-body {
@@ -67,16 +57,7 @@
 
 .article-body strong { font-weight: 500; }
 
-.article-body a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
-  text-decoration-color: var(--color-border-strong);
-  transition: text-decoration-color var(--duration-short) var(--ease-standard);
-}
-
-.article-body a:hover { text-decoration-color: currentColor; }
+/* Links use the shared pencil squiggle (App.css) */
 
 .article-body ul,
 .article-body ol { padding-left: 1.25em; }
@@ -286,7 +267,6 @@
 }
 
 .article-related__list li:last-child .article-related__row { border-bottom: 1px solid var(--color-border); }
-.article-related__row:hover .article-related__title { text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
 .article-related__date { flex: none; color: var(--color-text-3); font-variant-numeric: tabular-nums; }
 
 /* ─── Loading & missing ─── */
@@ -310,7 +290,6 @@
 @media (max-width: 640px) {
   .doc,
   .article-missing { margin-top: 96px; padding-top: 0; }
-  .doc__cover,
   .article-body { margin-top: 36px; }
 }
 

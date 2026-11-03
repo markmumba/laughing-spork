@@ -1,0 +1,86 @@
+.peek { position: relative; }
+
+/* Floating card under the link; it never takes clicks, so the link stays usable */
+.peek__card {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  z-index: 50;
+  width: 360px;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 18px 48px rgba(0, 0, 0, 0.14);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(calc(-50% + var(--peek-shift, 0px)), 6px) scale(0.97);
+  transform-origin: 50% 0;
+  transition: opacity 180ms var(--ease-standard), transform 240ms var(--ease-enter);
+}
+
+.peek__card.is-open {
+  opacity: 1;
+  transform: translate(calc(-50% + var(--peek-shift, 0px)), 0) scale(1);
+}
+
+/* ─── Site scroll ─── */
+
+.peek-scroll {
+  display: block;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* The card is 360px wide, so the 720px-wide shot shows at 2x; it pans its full height */
+.peek-scroll img {
+  display: block;
+  width: 100%;
+  animation: peek-scroll 22s ease-in-out infinite alternate;
+}
+
+@keyframes peek-scroll {
+  0%, 4% { transform: translateY(0); }
+  96%, 100% { transform: translateY(calc(-100% + 225px)); }
+}
+
+/* ─── Essays fly-through ─── */
+
+.peek-flight {
+  display: block;
+  position: absolute;
+  inset: 0;
+  perspective: 420px;
+}
+
+.peek-flight img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64px;
+  aspect-ratio: var(--shape);
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  animation: peek-fly 7.2s linear infinite;
+}
+
+@keyframes peek-fly {
+  0% { transform: translate3d(var(--x), var(--y), -1100px) translate(-50%, -50%); opacity: 0; filter: blur(4px); }
+  25% { opacity: 1; }
+  55% { filter: blur(0); }
+  85% { opacity: 1; }
+  100% { transform: translate3d(calc(var(--x) * 1.6), calc(var(--y) * 1.6), 330px) translate(-50%, -50%); opacity: 0; filter: blur(0); }
+}
+
+/* Reduced motion: hold one still frame of each preview */
+@media (prefers-reduced-motion: reduce) {
+  .peek__card { transition: opacity 120ms linear; transform: translate(calc(-50% + var(--peek-shift, 0px)), 0); }
+  .peek-scroll img,
+  .peek-flight img {
+    animation-play-state: paused;
+    animation-duration: 7.2s !important;
+  }
+}
