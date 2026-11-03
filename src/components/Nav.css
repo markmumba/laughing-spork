@@ -25,14 +25,68 @@
   left: calc((var(--col) + var(--gutter) * 2 - 100vw) / 2 + 56px);
   display: block;
   width: 220px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The two drawings stacked; the laughing one fades in over the smiling one */
+.site-header__face {
+  position: relative;
+  display: block;
+  transform-origin: 50% 90%;
+}
+
+.site-header__face img {
+  display: block;
+  width: 100%;
   height: auto;
 }
 
-/* No room in the margin: the portrait sits above the name instead, and the right side
-   lines up with the name rather than the top of the drawing */
+.site-header__face img { transition: opacity 120ms var(--ease-standard); }
+
+.site-header__laugh {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+/* The drawings are transparent between the lines, so the smile must fade out too,
+   or both faces show at once */
+.site-header__portrait.is-laughing .site-header__laugh { opacity: 1; }
+.site-header__portrait.is-laughing .site-header__face img:first-child { opacity: 0; }
+
+/* A small chuckle: the head bobs a few times and settles */
+.site-header__portrait.is-laughing .site-header__face.is-chuckling { animation: portrait-chuckle 620ms var(--ease-standard); }
+
+@keyframes portrait-chuckle {
+  0% { transform: translateY(0) rotate(0); }
+  18% { transform: translateY(-4px) rotate(-1.2deg); }
+  36% { transform: translateY(0) rotate(0.6deg); }
+  54% { transform: translateY(-3px) rotate(-0.8deg); }
+  72% { transform: translateY(0) rotate(0.3deg); }
+  86% { transform: translateY(-1px) rotate(0); }
+  100% { transform: translateY(0) rotate(0); }
+}
+
+.site-header__portrait:focus-visible { outline-offset: 6px; border-radius: var(--radius-card); }
+
+/* No room in the margin: the portrait sits on its own row above the name, and the right
+   side lines up with the name rather than the top of the drawing */
 @media (max-width: 1239px) {
-  .site-header--portrait { padding-top: 88px; align-items: flex-end; }
-  .site-header__portrait { position: static; width: 168px; margin: 0 0 16px -8px; }
+  .site-header--portrait {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding-top: 88px;
+  }
+  .site-header__portrait { position: static; grid-column: 1 / -1; width: 168px; margin: 0 0 -8px -8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header__portrait.is-laughing .site-header__face.is-chuckling { animation: none; }
 }
 
 .site-header__name { letter-spacing: -0.01em; }
@@ -74,5 +128,5 @@
 @media (max-width: 640px) {
   .site-header { padding-top: 56px; }
   .site-header--portrait { padding-top: 40px; }
-  .site-header__portrait { width: 128px; margin-bottom: 12px; }
+  .site-header__portrait { width: 128px; }
 }
