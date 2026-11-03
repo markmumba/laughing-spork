@@ -9,7 +9,7 @@ import Footer from '../components/Footer'
 export default function HomePage() {
   return (
     <>
-      <Nav />
+      <Nav portrait />
       <main className="page">
         <About />
         <Projects />
