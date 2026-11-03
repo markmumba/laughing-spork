@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-import 'highlight.js/styles/github.css'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import hljs from 'highlight.js/lib/core'
 import java from 'highlight.js/lib/languages/java'
 import javascript from 'highlight.js/lib/languages/javascript'
@@ -27,17 +26,46 @@ hljs.registerLanguage('kotlin', kotlin)
 hljs.registerLanguage('yaml', yaml)
 hljs.registerLanguage('css', css)
 
-// Light, Google Cloud blog–style code panel with a copy button
+// Names shown in the corner label; highlight.js ids that read oddly get a friendlier name
+const LANGUAGE_NAMES: Record<string, string> = { xml: 'html', bash: 'shell' }
+
+// Contentful doesn't record a snippet's language, so the label comes from highlight.js's
+// guess. Java, Kotlin, TypeScript and JavaScript look too alike to tell apart reliably (Java
+// snippets come back as "ts"), so only these distinctive languages are labelled, and only
+// when the guess is confident. Anything else is left unlabelled rather than mislabelled.
+const LABELLED = new Set(['yaml', 'json', 'sql', 'bash', 'xml', 'css', 'python', 'go'])
+const MIN_RELEVANCE = 8
+
+// Quiet code panel in the reading column: greyscale highlighting (ArticlePage.css),
+// a small language label, and a Copy button that appears on hover or focus
 export default function CodeBlock({ code }: { code: string }) {
-  const codeRef = useRef<HTMLElement>(null)
+  const blockRef = useRef<HTMLDivElement>(null)
+  const preRef = useRef<HTMLPreElement>(null)
   const [copied, setCopied] = useState(false)
 
-  useEffect(() => {
-    if (codeRef.current) {
-      codeRef.current.removeAttribute('data-highlighted')
-      hljs.highlightElement(codeRef.current)
-    }
+  const { html, language } = useMemo(() => {
+    const result = hljs.highlightAuto(code)
+    const id = result.language && LABELLED.has(result.language) && result.relevance >= MIN_RELEVANCE ? result.language : undefined
+    return { html: result.value, language: id ? LANGUAGE_NAMES[id] ?? id : null }
   }, [code])
+
+  // Fade the right edge only while there is more code to scroll to
+  useEffect(() => {
+    const pre = preRef.current
+    const block = blockRef.current
+    if (!pre || !block) return
+    const update = () => {
+      block.classList.toggle('has-more', pre.scrollLeft + pre.clientWidth < pre.scrollWidth - 2)
+    }
+    update()
+    pre.addEventListener('scroll', update, { passive: true })
+    const observer = new ResizeObserver(update)
+    observer.observe(pre)
+    return () => {
+      pre.removeEventListener('scroll', update)
+      observer.disconnect()
+    }
+  }, [html])
 
   const copy = () => {
     navigator.clipboard.writeText(code).then(() => {
@@ -47,15 +75,13 @@ export default function CodeBlock({ code }: { code: string }) {
   }
 
   return (
-    <div className="code-block">
-      <button type="button" className="code-block__copy" onClick={copy} aria-label={copied ? 'Copied' : 'Copy code'}>
-        {copied ? (
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
-        ) : (
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m0 16H8V7h11z" /></svg>
-        )}
+    <div ref={blockRef} className={`code-block${language ? ' has-label' : ''}`}>
+      {language && <span className="code-block__lang">{language}</span>}
+      <button type="button" className="code-block__copy" onClick={copy} aria-live="polite">
+        {copied ? 'Copied' : 'Copy'}
       </button>
-      <pre><code ref={codeRef}>{code}</code></pre>
+      {/* highlight.js escapes the source, so its markup is safe to insert */}
+      <pre ref={preRef}><code className="hljs" dangerouslySetInnerHTML={{ __html: html }} /></pre>
     </div>
   )
 }
