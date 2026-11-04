@@ -1,63 +1,109 @@
-.note-strip { list-style: none; }
+/* The deck runs the full width of the window so earlier pages can sit in the left margin,
+   while the front page lines up with the column */
+.deck {
+  --page-w: min(320px, 78vw);
+  --edge: max(var(--gutter), (100vw - var(--col)) / 2);
+  display: flex;
+  gap: 24px;
+  margin: -32px calc(50% - 50vw) 0;
+  padding: 32px calc(100vw - var(--edge) - var(--page-w)) 8px var(--edge);
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--edge);
+  scrollbar-width: none;
+  cursor: grab;
+}
 
-.note { width: 262px; }
+.deck::-webkit-scrollbar { display: none; }
+.deck.is-gliding { scroll-snap-type: none; }
+.deck.is-dragging { cursor: grabbing; user-select: none; }
+.deck.is-dragging a { cursor: grabbing; }
 
-.note__link {
+/* --d is the page's distance from the front, 0 to 1, set as the deck scrolls */
+.deck__item {
+  --d: 1;
+  flex: none;
+  width: var(--page-w);
+  scroll-snap-align: start;
+}
+
+.deck__link {
   display: block;
   color: inherit;
   text-decoration: none;
+  cursor: inherit;
 }
 
-/* A small page of the essay, faded out at the bottom */
-.note__page {
-  aspect-ratio: 4 / 5;
-  padding: 22px 20px;
-  border-radius: var(--radius-card);
-  background: var(--color-surface);
+/* A sheet of paper with the essay's opening on it, faded out at the bottom */
+.deck__page {
+  position: relative;
+  aspect-ratio: 10 / 13;
+  padding: 28px 26px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.06);
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 96%);
-  mask-image: linear-gradient(to bottom, #000 62%, transparent 96%);
-  transition: background-color var(--duration-medium) var(--ease-standard);
+  transform: scale(calc(1 - 0.2 * var(--d)));
+  opacity: calc(1 - 0.45 * var(--d));
+  will-change: transform, opacity;
 }
 
-.note__link:hover .note__page { background: var(--color-surface-2); }
+:root[data-theme='dark'] .deck__page { background: var(--color-surface); box-shadow: none; }
 
-.note__page-title {
+.deck__page::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 30%;
+  background: linear-gradient(to bottom, transparent, var(--color-bg) 85%);
+  pointer-events: none;
+}
+
+:root[data-theme='dark'] .deck__page::after { background: linear-gradient(to bottom, transparent, var(--color-surface) 85%); }
+
+.deck__page-title {
   font-size: 15px;
   line-height: 1.25;
   letter-spacing: -0.01em;
   text-wrap: balance;
 }
 
-.note__page-date {
-  margin: 4px 0 14px;
-  font-size: 11px;
+.deck__page-date {
+  margin: 4px 0 16px;
+  font-size: 10px;
   color: var(--color-text-3);
 }
 
-.note__page-text {
-  font-size: 11px;
-  line-height: 1.6;
+.deck__page-text {
+  font-size: 10px;
+  line-height: 1.55;
   color: var(--color-text-2);
 }
 
-.note__page--all {
+.deck__page-text + .deck__page-text { margin-top: 8px; }
+
+.deck__page--all {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   gap: 2px;
-  -webkit-mask-image: none;
-  mask-image: none;
 }
 
-.note__caption {
+.deck__page--all::after { content: none; }
+
+/* Only the front page carries a caption */
+.deck__caption {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   margin-top: 12px;
+  opacity: max(0, 1 - 2.5 * var(--d));
 }
 
-.note__title {
+.deck__title {
   min-width: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -65,4 +111,4 @@
   overflow: hidden;
 }
 
-.note__date { flex: none; color: var(--color-text-3); }
+.deck__date { flex: none; color: var(--color-text-3); }

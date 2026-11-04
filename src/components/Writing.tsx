@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { getEssaysForHomepage, type EssayItem } from '../lib/contentful'
+import { getLatestEssays, type EssayItem } from '../lib/contentful'
 import Stepper from './Stepper'
 import './Writing.css'
 
@@ -19,11 +19,12 @@ function extractText(rich: unknown): string {
 // a series…" recap; both repeat what the card already says, so the excerpt skips them
 const SERIES_LINE = /—\s*Part \d+:|^This is Part \d+ of a series/
 
-// Opening text of the essay, from body paragraphs only (headings repeat the title)
-function openingText(rich: unknown, chars = 700): string {
-  if (!rich || typeof rich !== 'object') return ''
+// Opening paragraphs of the essay, body text only (headings repeat the title)
+function openingParagraphs(rich: unknown, chars = 1500): string[] {
+  if (!rich || typeof rich !== 'object') return []
   const root = rich as { content?: Array<{ nodeType?: string }> }
   const parts: string[] = []
+  let length = 0
   for (const block of root.content ?? []) {
     if (block.nodeType !== 'paragraph') continue
     const words: string[] = []
@@ -36,9 +37,10 @@ function openingText(rich: unknown, chars = 700): string {
     const text = words.join('').trim()
     if (!text || SERIES_LINE.test(text)) continue
     parts.push(text)
-    if (parts.join(' ').length > chars) break
+    length += text.length
+    if (length > chars) break
   }
-  return parts.join(' ').slice(0, chars)
+  return parts
 }
 
 // "02/2026", as the date reads on the cards
@@ -48,18 +50,112 @@ function monthSlashYear(raw: string): string {
   return `${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`
 }
 
-// Each card is a miniature page of the essay: title, date, then its opening text
+// How far one page is from the next, as the track scrolls
+function pageStep(track: HTMLElement): number {
+  const first = track.firstElementChild as HTMLElement | null
+  if (!first) return 1
+  return first.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0)
+}
+
+// A deck of essay pages. The page at the column's edge is full size with its caption;
+// the others shrink and fade with their distance from it, earlier ones spilling into the
+// left margin. Scroll, swipe or drag with the mouse to bring the next one forward.
 export default function Writing() {
   const trackRef = useRef<HTMLUListElement>(null)
+  const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null)
+  const swallowClick = useRef(false)
   const [essays, setEssays] = useState<EssayItem[]>([])
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
-    getEssaysForHomepage().then((items) => {
-      setTotal(items.length)
-      setEssays(items.slice(0, SHOWN))
+    getLatestEssays(SHOWN).then(({ items, total }) => {
+      setTotal(total)
+      setEssays(items)
     })
   }, [])
+
+  // Each page's distance from the front, 0 to 1, drives its size and fade in the CSS
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return
+    let frame = 0
+    const paint = () => {
+      frame = 0
+      const at = track.scrollLeft / pageStep(track)
+      Array.from(track.children).forEach((item, i) => {
+        (item as HTMLElement).style.setProperty('--d', Math.min(Math.abs(i - at), 1).toFixed(3))
+      })
+    }
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(paint) }
+    paint()
+    track.addEventListener('scroll', schedule, { passive: true })
+    const observer = new ResizeObserver(schedule)
+    observer.observe(track)
+    return () => {
+      cancelAnimationFrame(frame)
+      track.removeEventListener('scroll', schedule)
+      observer.disconnect()
+    }
+  }, [essays])
+
+  // Snapping is off while the mouse drags, and comes back once the glide to a page ends
+  const glideTo = (index: number) => {
+    const track = trackRef.current
+    if (!track) return
+    const last = track.children.length - 1
+    const left = Math.max(0, Math.min(index, last)) * pageStep(track)
+    track.classList.add('is-gliding')
+    track.scrollTo({ left, behavior: 'smooth' })
+    const settle = () => track.classList.remove('is-gliding')
+    track.addEventListener('scrollend', settle, { once: true })
+    window.setTimeout(settle, 700)
+  }
+
+  const onPointerDown = (e: React.PointerEvent<HTMLUListElement>) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return
+    drag.current = { x: e.clientX, left: e.currentTarget.scrollLeft, moved: false }
+  }
+
+  const onPointerMove = (e: React.PointerEvent<HTMLUListElement>) => {
+    const d = drag.current
+    if (!d) return
+    const dx = e.clientX - d.x
+    if (!d.moved) {
+      if (Math.abs(dx) < 4) return
+      d.moved = true
+      e.currentTarget.setPointerCapture(e.pointerId)
+      e.currentTarget.classList.add('is-dragging', 'is-gliding')
+    }
+    e.currentTarget.scrollLeft = d.left - dx
+  }
+
+  const onPointerUp = (e: React.PointerEvent<HTMLUListElement>) => {
+    const d = drag.current
+    drag.current = null
+    if (!d?.moved) return
+    const track = e.currentTarget
+    track.classList.remove('is-dragging')
+    swallowClick.current = true
+    // A short flick is enough to turn the page
+    const step = pageStep(track)
+    const from = Math.round(d.left / step)
+    const moved = (track.scrollLeft - d.left) / step
+    glideTo(Math.abs(moved) < 0.15 ? from : from + Math.sign(moved) * Math.max(1, Math.round(Math.abs(moved))))
+  }
+
+  // A drag isn't a click, and clicking a page behind the front one brings it forward
+  const onClickCapture = (e: React.MouseEvent<HTMLUListElement>) => {
+    const track = e.currentTarget
+    const item = (e.target as HTMLElement).closest('li')
+    const index = item ? Array.from(track.children).indexOf(item) : -1
+    const front = Math.round(track.scrollLeft / pageStep(track))
+    if (swallowClick.current || (index >= 0 && index !== front)) {
+      e.preventDefault()
+      e.stopPropagation()
+      if (!swallowClick.current) glideTo(index)
+    }
+    swallowClick.current = false
+  }
 
   return (
     <section id="writing" className="block" aria-labelledby="writing-title">
@@ -68,31 +164,40 @@ export default function Writing() {
         <Stepper track={trackRef} label="Scroll essays" />
       </div>
 
-      <ul ref={trackRef} className="carousel note-strip">
+      <ul
+        ref={trackRef}
+        className="deck"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        onClickCapture={onClickCapture}
+      >
         {essays.map((essay) => {
           const title = extractText(essay.title)
           const date = monthSlashYear(extractText(essay.publishDate as string))
-          const text = openingText(essay.article)
           return (
-            <li key={essay.id} className="note">
-              <RouterLink to={`/essays/${essay.id}`} className="note__link">
-                <div className="note__page" aria-hidden="true">
-                  <p className="note__page-title">{title}</p>
-                  <p className="note__page-date">{date}</p>
-                  <p className="note__page-text">{text}</p>
+            <li key={essay.id} className="deck__item">
+              <RouterLink to={`/essays/${essay.id}`} className="deck__link" draggable={false}>
+                <div className="deck__page" aria-hidden="true">
+                  <p className="deck__page-title">{title}</p>
+                  <p className="deck__page-date">{date}</p>
+                  {openingParagraphs(essay.article).map((text, i) => (
+                    <p key={i} className="deck__page-text">{text}</p>
+                  ))}
                 </div>
-                <div className="note__caption">
-                  <span className="note__title">{title}</span>
-                  <span className="note__date">{date}</span>
+                <div className="deck__caption">
+                  <span className="deck__title">{title}</span>
+                  <span className="deck__date">{date}</span>
                 </div>
               </RouterLink>
             </li>
           )
         })}
         {essays.length > 0 && (
-          <li className="note">
-            <RouterLink to="/essays" className="note__link">
-              <div className="note__page note__page--all">
+          <li className="deck__item">
+            <RouterLink to="/essays" className="deck__link" draggable={false}>
+              <div className="deck__page deck__page--all">
                 <span>All {total} essays</span>
                 <span className="muted">Fly through them →</span>
               </div>

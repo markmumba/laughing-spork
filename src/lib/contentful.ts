@@ -106,6 +106,21 @@ export async function getEssaysForHomepage(): Promise<EssayItem[]> {
   }
 }
 
+// The newest essays for the homepage deck, plus how many there are in all
+export async function getLatestEssays(limit: number): Promise<{ items: EssayItem[]; total: number }> {
+  try {
+    const response = await client.getEntries({
+      content_type: 'articles',
+      order: ['-fields.publishDate'],
+      limit,
+    } as Parameters<typeof client.getEntries>[0])
+    return { items: response.items.map(mapItem), total: response.total }
+  } catch (error) {
+    console.error('Error fetching latest essays:', error)
+    return { items: [], total: 0 }
+  }
+}
+
 export async function getEssayById(id: string): Promise<EssayItem | null> {
   try {
     const response = await client.getEntries({
