@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { getEssaysForHomepage, type EssayItem } from '../lib/contentful'
+import { getLatestEssays, type EssayItem } from '../lib/contentful'
 import Stepper from './Stepper'
 import './Writing.css'
 
@@ -68,9 +68,9 @@ export default function Writing() {
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
-    getEssaysForHomepage().then((items) => {
-      setTotal(items.length)
-      setEssays(items.slice(0, SHOWN))
+    getLatestEssays(SHOWN).then(({ items, total }) => {
+      setTotal(total)
+      setEssays(items)
     })
   }, [])
 
