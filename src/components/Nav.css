@@ -14,31 +14,6 @@
   text-decoration: none;
 }
 
-/* The portrait sits at the left edge of the window, its top level with the name, so the
-   header keeps its usual shape. Narrower screens have no margin: see the query below. */
-.site-header--portrait { position: relative; }
-
-.site-header__portrait {
-  position: absolute;
-  top: 100px;
-  /* The header is centred, so step back from its left edge to the window's, plus a margin */
-  left: calc((var(--col) + var(--gutter) * 2 - 100vw) / 2 + 56px);
-  display: block;
-  width: 220px;
-  height: auto;
-}
-
-/* No room in the margin: the portrait sits above the name instead, and the right side
-   lines up with the name rather than the top of the drawing */
-@media (max-width: 1239px) {
-  .site-header--portrait { padding-top: 88px; align-items: flex-end; }
-  .site-header__portrait { position: static; width: 168px; margin: 0 0 16px -8px; }
-}
-
-/* The drawing is near-black ink; flip it to light ink on the dark theme */
-:root[data-theme='dark'] img.site-header__portrait,
-:root[data-theme='dark'] .site-header__portrait img { filter: invert(1); }
-
 .site-header__name { letter-spacing: -0.01em; }
 .site-header__role { color: var(--color-text-3); }
 
@@ -77,6 +52,4 @@
 
 @media (max-width: 640px) {
   .site-header { padding-top: 56px; }
-  .site-header--portrait { padding-top: 40px; }
-  .site-header__portrait { width: 128px; margin-bottom: 12px; }
 }
