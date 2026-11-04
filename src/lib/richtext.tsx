@@ -168,7 +168,7 @@ const options = {
 }
 
 export default function RichTextRenderer({ content }: { content: Document | null }) {
-  if (!content) return <p style={{ color: '#6e6e73', fontStyle: 'italic' }}>No content available.</p>
+  if (!content) return <p style={{ color: 'var(--color-text-3)', fontStyle: 'italic' }}>No content available.</p>
   const processed = mergeCodeBlocks(content)
   return <>{documentToReactComponents(processed, options)}</>
 }
