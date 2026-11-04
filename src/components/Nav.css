@@ -35,6 +35,10 @@
   .site-header__portrait { position: static; width: 168px; margin: 0 0 16px -8px; }
 }
 
+/* The drawing is near-black ink; flip it to light ink on the dark theme */
+:root[data-theme='dark'] img.site-header__portrait,
+:root[data-theme='dark'] .site-header__portrait img { filter: invert(1); }
+
 .site-header__name { letter-spacing: -0.01em; }
 .site-header__role { color: var(--color-text-3); }
 

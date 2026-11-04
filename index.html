@@ -5,6 +5,16 @@
     <link rel="icon" type="image/png" sizes="64x64" href="/logo.png" />
     <link rel="icon" type="image/svg+xml" sizes="any" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <!-- Set the theme before first paint: the saved choice, else the OS setting -->
+    <script>
+      (function () {
+        var t
+        try { t = localStorage.getItem('theme') } catch (e) {}
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        document.documentElement.dataset.theme = t
+      })()
+    </script>
     <meta name="description" content="Markian Mumba Mwangi — Fullstack Developer. Building distributed systems and clean abstractions in Nairobi, Kenya." />
     <title>Markian Mumba Mwangi — Engineer, Learner, Philosopher</title>
 

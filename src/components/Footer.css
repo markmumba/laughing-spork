@@ -24,6 +24,7 @@
 }
 
 .site-footer__links a,
+.site-footer__theme,
 .site-footer__legal {
   font-size: 14px;
   color: var(--color-text-3);
@@ -32,3 +33,15 @@
 
 .site-footer__links a { transition: color var(--duration-short) var(--ease-standard); }
 .site-footer__links a:hover { color: var(--color-text); }
+
+.site-footer__theme {
+  min-height: 32px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: color var(--duration-short) var(--ease-standard);
+}
+
+.site-footer__theme:hover { color: var(--color-text); }

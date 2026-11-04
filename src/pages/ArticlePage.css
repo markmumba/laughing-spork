@@ -239,18 +239,18 @@
 .code-block .hljs-literal,
 .code-block .hljs-symbol,
 .code-block .hljs-bullet,
-.code-block .hljs-link { color: #5e5e5e; }
+.code-block .hljs-link { color: color-mix(in srgb, var(--color-text-2), var(--color-text-3)); }
 
 .code-block .hljs-comment,
 .code-block .hljs-doc,
 .code-block .hljs-quote,
-.code-block .hljs-meta { color: #6f6f6f; font-style: italic; }
+.code-block .hljs-meta { color: var(--color-text-3); font-style: italic; }
 
 .code-block .hljs-punctuation,
-.code-block .hljs-operator { color: #6f6f6f; }
+.code-block .hljs-operator { color: var(--color-text-3); }
 
-.code-block .hljs-addition { background: rgba(0, 0, 0, 0.05); }
-.code-block .hljs-deletion { color: #6f6f6f; text-decoration: line-through; }
+.code-block .hljs-addition { background: color-mix(in srgb, var(--color-text) 6%, transparent); }
+.code-block .hljs-deletion { color: var(--color-text-3); text-decoration: line-through; }
 .code-block .hljs-emphasis { font-style: italic; }
 .code-block .hljs-strong { font-weight: 600; }
 
